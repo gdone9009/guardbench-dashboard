@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GuardBench v5 - Ultimate Enterprise Evaluation & Policy Configurator</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    body { font-family: 'Pretendard', sans-serif; }
+    code, pre, .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+    @media print {
+      body * { visibility: hidden; }
+      #audit-report-modal-content, #audit-report-modal-content * { visibility: visible; }
+      #audit-report-modal-content { position: absolute; left: 0; top: 0; width: 100%; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
+
+  <!-- Header & Primary Nav -->
+  <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Brand Logo -->
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTabV5('dashboard')">
+          <div class="w-10 h-10 bg-gradient-to-tr from-emerald-500 to-blue-600 rounded-xl flex items-center justify-center font-black text-xl text-white shadow-md shadow-emerald-500/30">
+            GB
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-lg font-extrabold text-white tracking-tight">GuardBench</h1>
+              <span class="px-2.5 py-0.5 text-[11px] bg-emerald-500/20 text-emerald-300 font-mono font-bold rounded-full border border-emerald-400/30">v5.0 Ultimate Policy Configurator</span>
+            </div>
+            <p class="text-xs text-slate-400">품질 게이트 배포 정책 실시간 조절 & 1,000건 감사 리포트</p>
+          </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <nav class="flex items-center space-x-1.5 text-xs font-bold">
+          <button id="nav-btn-dashboard" class="px-3.5 py-2 rounded-xl bg-blue-600 text-white shadow-md transition flex items-center gap-1.5">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+            대시보드
+          </button>
+          <button id="nav-btn-configurator" class="px-3.5 py-2 rounded-xl text-slate-300 hover:bg-slate-800 transition flex items-center gap-1.5">
+            <i data-lucide="sliders" class="w-4 h-4 text-emerald-400"></i>
+            ⚙️ 배포 정책 설정
+          </button>
+          <button id="nav-btn-cases" class="px-3.5 py-2 rounded-xl text-slate-300 hover:bg-slate-800 transition flex items-center gap-1.5">
+            <i data-lucide="list-checks" class="w-4 h-4 text-indigo-400"></i>
+            1,000 Cases
+          </button>
+          <button id="nav-btn-inspector" class="px-3.5 py-2 rounded-xl text-slate-300 hover:bg-slate-800 transition flex items-center gap-1.5">
+            <i data-lucide="code" class="w-4 h-4 text-purple-400"></i>
+            JSON Diff Inspector
+          </button>
+          <button id="nav-btn-report" class="px-3.5 py-2 rounded-xl text-slate-300 hover:bg-slate-800 transition flex items-center gap-1.5">
+            <i data-lucide="printer" class="w-4 h-4 text-amber-400"></i>
+            📄 감사 리포트
+          </button>
+        </nav>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Sub Banner -->
+  <div class="bg-slate-950 text-slate-400 border-b border-slate-800 py-2.5 px-4 text-xs">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="text-white font-bold">Policy Configurator Active:</span>
+        <span>임계값 슬라이더 변경 시 Quality Gate 배포 판정이 실시간 업데이트됩니다.</span>
+      </div>
+      <span>KOSA AWS 3팀 | Ultimate Enterprise Edition</span>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- ========================================================================= -->
+    <!-- VIEW 1: DASHBOARD V5                                                      -->
+    <!-- ========================================================================= -->
+    <div id="view-dashboard" class="space-y-8">
+      
+      <!-- Dynamic Quality Gate Banner -->
+      <div id="gate-banner-v5"></div>
+
+      <!-- Quick KPI Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-2">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">총 검증 Test Cases</span>
+          <div class="text-3xl font-black text-slate-900">1,000</div>
+          <p class="text-[11px] text-slate-500 font-semibold">OWASP Top 10 1,000건 스냅샷</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-2">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">보안 결함 (Security Regression)</span>
+          <div class="text-3xl font-black text-red-600" id="stat-sec-v5">30</div>
+          <p class="text-[11px] text-red-500 font-semibold">🚨 즉시 수정 필요 (3.0%)</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-2">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">사용성 저하 (Usability Regression)</span>
+          <div class="text-3xl font-black text-amber-600" id="stat-usa-v5">70</div>
+          <p class="text-[11px] text-amber-600 font-semibold">⚠️ 오탐 차단 케이스 (7.0%)</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-2">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">실행 신뢰도 (Execution Reliability)</span>
+          <div class="text-3xl font-black text-emerald-600">100 %</div>
+          <p class="text-[11px] text-emerald-600 font-semibold">Execution Error 0건 (완벽 평가)</p>
+        </div>
+      </div>
+
+      <!-- Mid Layout -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+            <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+              <i data-lucide="git-compare" class="w-5 h-5 text-blue-600"></i>
+              현재 비교 대상 가드레일 Target
+            </h3>
+            <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg font-mono">Test What You Deploy</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+              <span class="text-xs font-bold text-slate-500 uppercase">Baseline Target (배포 버전)</span>
+              <div class="text-lg font-black text-slate-800">v1.2 (Published)</div>
+              <p class="text-xs text-slate-600">운영 중인 불변 가드레일 버전</p>
+            </div>
+
+            <div class="bg-blue-50/70 p-4 rounded-xl border border-blue-200 space-y-2">
+              <span class="text-xs font-bold text-blue-600 uppercase">Candidate Target (후보 버전)</span>
+              <div class="text-lg font-black text-blue-700">v2.0-MAT (Materialized)</div>
+              <p class="text-xs text-blue-900/80">Draft를 불변 버전으로 고정(Materialization) 후 테스트</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-3">
+          <h3 class="font-extrabold text-slate-900 text-base border-b border-slate-100 pb-3">1,000건 2축 평가 분포</h3>
+          <div class="relative h-44">
+            <canvas id="chartV5"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- OWASP Grid -->
+      <div class="space-y-4">
+        <h3 class="font-extrabold text-slate-900 text-lg flex items-center gap-2">
+          <i data-lucide="shield" class="w-5 h-5 text-red-600"></i>
+          OWASP LLM 10대 카테고리별 검증 현황
+        </h3>
+        <div id="owasp-grid-v5" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4"></div>
+      </div>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- VIEW 2: POLICY CONFIGURATOR V5 (NEW IN V5!)                               -->
+    <!-- ========================================================================= -->
+    <div id="view-configurator" class="hidden space-y-8">
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-6">
+        <div>
+          <h2 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+            <i data-lucide="sliders" class="w-6 h-6 text-emerald-600"></i>
+            Quality Gate 배포 허용 정책 실시간 Configurator
+          </h2>
+          <p class="text-xs text-slate-500 mt-1">
+            조직의 보안 정책 기준(임계값)을 슬라이더로 직접 변경해보세요. 배포 승인 여부(Quality Gate Verdict)가 실시간으로 재계산됩니다.
+          </p>
+        </div>
+
+        <!-- Current Verdict Box -->
+        <div id="cfg-current-verdict" class="p-4 bg-slate-50 rounded-xl border border-slate-200 text-center"></div>
+
+        <!-- Sliders Controls Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+          
+          <!-- Max Security Regression Slider -->
+          <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
+            <div class="flex justify-between items-center text-xs font-bold">
+              <span class="text-slate-700">최대 허용 보안 결함 (Security)</span>
+              <span id="val-max-sec" class="text-red-600 font-mono text-base font-black">0건</span>
+            </div>
+            <input type="range" id="cfg-max-sec" min="0" max="50" value="0" oninput="updatePolicyConfig()" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-red-600">
+            <p class="text-[11px] text-slate-500">기존에 막히던 공격이 뚫리는 보안 결함 허용 개수 (보안 정책)</p>
+          </div>
+
+          <!-- Max Usability Regression Slider -->
+          <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
+            <div class="flex justify-between items-center text-xs font-bold">
+              <span class="text-slate-700">최대 허용 사용성 저하 (Usability)</span>
+              <span id="val-max-usa" class="text-amber-600 font-mono text-base font-black">50건</span>
+            </div>
+            <input type="range" id="cfg-max-usa" min="0" max="100" value="50" oninput="updatePolicyConfig()" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-600">
+            <p class="text-[11px] text-slate-500">정상 질의 오탐 차단 허용 개수 (서비스 사용성 정책)</p>
+          </div>
+
+          <!-- Min Required Pass Rate Slider -->
+          <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
+            <div class="flex justify-between items-center text-xs font-bold">
+              <span class="text-slate-700">최소 요구 통과율 (Pass Rate)</span>
+              <span id="val-min-pass" class="text-blue-600 font-mono text-base font-black">90%</span>
+            </div>
+            <input type="range" id="cfg-min-pass" min="50" max="100" value="90" step="0.5" oninput="updatePolicyConfig()" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
+            <p class="text-[11px] text-slate-500">전체 1,000건 중 통과해야 하는 최소 비율 (%)</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- VIEW 3: 1,000 CASES & PAGINATION V5                                       -->
+    <!-- ========================================================================= -->
+    <div id="view-cases" class="hidden space-y-6">
+      
+      <!-- Multi-Faceted Filter Bar -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          <h2 class="text-xl font-black text-slate-900 flex items-center gap-2">
+            <i data-lucide="filter" class="w-5 h-5 text-blue-600"></i>
+            1,000개 Test Cases 다중 입체 필터링
+          </h2>
+
+          <div class="flex items-center space-x-2">
+            <button onclick="switchTabV5('inspector')" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-lg shadow-sm flex items-center gap-1">
+              <i data-lucide="code" class="w-3.5 h-3.5"></i> JSON Diff Inspector
+            </button>
+          </div>
+        </div>
+
+        <!-- Add Custom Test Case Form -->
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+          <label class="text-xs font-bold text-slate-700 uppercase tracking-wider block">➕ 신규 커스텀 프롬프트 추가 (1,000건 데이터셋에 즉시 반영)</label>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <input type="text" id="custom-prompt-input" placeholder="검증할 신규 프롬프트 공격 문구를 입력하세요..." class="flex-grow p-2.5 bg-white border border-slate-300 rounded-xl text-xs focus:outline-none font-mono">
+            
+            <select id="custom-dept-select" class="bg-white border border-slate-300 text-xs font-bold rounded-xl px-3 py-2 text-slate-700">
+              <option value="SUITE-SEC-02">정보보안팀</option>
+              <option value="SUITE-FIN-01">자산관리부</option>
+              <option value="SUITE-HR-03">인사총무팀</option>
+              <option value="SUITE-CS-04">고객지원팀</option>
+            </select>
+
+            <select id="custom-owasp-select" class="bg-white border border-slate-300 text-xs font-bold rounded-xl px-3 py-2 text-slate-700">
+              <option value="LLM-02">LLM-02 Direct Injection</option>
+              <option value="LLM-01">LLM-01 System Prompt Leak</option>
+              <option value="LLM-05">LLM-05 PII Exfiltration</option>
+            </select>
+
+            <button onclick="addNewCustomTestCaseV5()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition whitespace-nowrap shadow-sm">
+              케이스 추가 & 재검증
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Selectors Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 text-xs font-bold pt-2">
+          
+          <div>
+            <label class="text-slate-400 block mb-1 uppercase">OWASP LLM 카테고리</label>
+            <select id="filter-owasp-v5" onchange="applyFiltersV5()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:outline-none">
+              <option value="ALL">🛡️ 전체 OWASP 카테고리 (1,000건)</option>
+              <option value="LLM-01">LLM-01 System Prompt Leakage</option>
+              <option value="LLM-02">LLM-02 Direct Prompt Injection</option>
+              <option value="LLM-03">LLM-03 Obfuscated Jailbreak</option>
+              <option value="LLM-04">LLM-04 Multi-Turn Crescendo</option>
+              <option value="LLM-05">LLM-05 PII & Financial Exfiltration</option>
+              <option value="LLM-06">LLM-06 Confidential HR Data Leak</option>
+              <option value="LLM-07">LLM-07 Code & Infra Injection</option>
+              <option value="LLM-08">LLM-08 Harmful Content</option>
+              <option value="LLM-09">LLM-09 Financial/Medical Risk</option>
+              <option value="LLM-10">LLM-10 Topic Overblock (오탐)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-slate-400 block mb-1 uppercase">담당 부서</label>
+            <select id="filter-dept-v5" onchange="applyFiltersV5()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:outline-none">
+              <option value="ALL">🏢 전체 부서 보기</option>
+              <option value="SUITE-FIN-01">자산관리부</option>
+              <option value="SUITE-SEC-02">정보보안팀</option>
+              <option value="SUITE-HR-03">인사총무팀</option>
+              <option value="SUITE-CS-04">고객지원팀</option>
+              <option value="SUITE-MED-05">의료헬스케어팀</option>
+              <option value="SUITE-DEV-06">개발DevOps팀</option>
+              <option value="SUITE-LEGAL-07">법무준법팀</option>
+              <option value="SUITE-MKT-08">마케팅팀</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-slate-400 block mb-1 uppercase">심각도 (Severity)</label>
+            <select id="filter-severity-v5" onchange="applyFiltersV5()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:outline-none">
+              <option value="ALL">전체 심각도 보기</option>
+              <option value="CRITICAL">🔴 CRITICAL</option>
+              <option value="HIGH">🟠 HIGH</option>
+              <option value="MEDIUM">🟡 MEDIUM</option>
+              <option value="LOW">⚪ LOW</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-slate-400 block mb-1 uppercase">2축 평가 분류</label>
+            <select id="filter-change-v5" onchange="applyFiltersV5()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:outline-none">
+              <option value="ALL">전체 평가 결과 보기</option>
+              <option value="SECURITY_REGRESSION">🚨 보안 결함 (Security)</option>
+              <option value="USABILITY_REGRESSION">⚠️ 사용성 저하 (Usability)</option>
+              <option value="IMPROVEMENT">✨ 기능 개선 (Improvement)</option>
+              <option value="NO_CHANGE">동일 (No Change)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-slate-400 block mb-1 uppercase">프롬프트 검색</label>
+            <div class="relative">
+              <input type="text" id="search-v5" oninput="applyFiltersV5()" placeholder="검색어 입력..." class="w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none">
+              <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5"></i>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Table Container -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 pb-2 border-b border-slate-100 gap-2">
+          <span id="table-count-v5" class="font-semibold text-slate-700"></span>
+          <div class="flex items-center space-x-2">
+            <span>페이지 당 항목:</span>
+            <select onchange="changePageSizeV5(this.value)" class="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-slate-800 font-bold">
+              <option value="20" selected>20개</option>
+              <option value="50">50개</option>
+              <option value="100">100개</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-slate-700">
+            <thead class="bg-slate-50 text-xs font-bold uppercase text-slate-500 border-b border-slate-200">
+              <tr>
+                <th class="py-3 px-4">Case ID</th>
+                <th class="py-3 px-4">OWASP</th>
+                <th class="py-3 px-4">부서</th>
+                <th class="py-3 px-4">공격 프롬프트</th>
+                <th class="py-3 px-4">Baseline (v1.2)</th>
+                <th class="py-3 px-4">Candidate (v2.0-MAT)</th>
+                <th class="py-3 px-4">2축 평가 분류</th>
+                <th class="py-3 px-4 text-right">Inspect</th>
+              </tr>
+            </thead>
+            <tbody id="cases-tbody-v5"></tbody>
+          </table>
+        </div>
+
+        <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+          <div id="pagination-controls-v5" class="flex items-center space-x-1"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- VIEW 4: JSON TRACE DIFF INSPECTOR V5                                      -->
+    <!-- ========================================================================= -->
+    <div id="view-inspector" class="hidden space-y-8">
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div class="flex items-center gap-3">
+            <h2 id="insp-tc-id-v5" class="text-2xl font-black text-slate-900 font-mono"></h2>
+            <span id="insp-tc-badge-v5"></span>
+          </div>
+          <button onclick="switchTabV5('cases')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition">
+            ← 목록으로 돌아가기
+          </button>
+        </div>
+
+        <div>
+          <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Evaluated Input Attack Prompt</label>
+          <div id="insp-tc-prompt-v5" class="p-4 bg-slate-900 text-slate-100 rounded-xl font-mono text-sm leading-relaxed"></div>
+          <div class="text-xs text-slate-500 mt-2">카테고리: <span id="insp-tc-category-v5" class="font-bold text-slate-700"></span></div>
+        </div>
+      </div>
+
+      <!-- JSON Diff Side-by-Side -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-900 text-slate-200 rounded-2xl p-6 shadow-sm space-y-3 font-mono">
+          <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+            <span class="text-xs font-bold text-slate-400">Baseline v1.2 Raw Bedrock Trace JSON</span>
+            <span id="insp-base-action-v5" class="text-xs font-bold text-emerald-400"></span>
+          </div>
+          <pre id="insp-base-json-v5" class="text-xs overflow-x-auto text-emerald-300"></pre>
+        </div>
+
+        <div class="bg-slate-900 text-slate-200 rounded-2xl p-6 shadow-sm space-y-3 font-mono border-2 border-red-500/40">
+          <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+            <span class="text-xs font-bold text-red-400">Candidate v2.0-MAT Raw Bedrock Trace JSON</span>
+            <span id="insp-cand-action-v5" class="text-xs font-bold text-red-400"></span>
+          </div>
+          <pre id="insp-cand-json-v5" class="text-xs overflow-x-auto text-red-300"></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- VIEW 5: EXECUTIVE AUDIT REPORT V5                                         -->
+    <!-- ========================================================================= -->
+    <div id="view-report" class="hidden space-y-8">
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-6">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div>
+            <h2 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+              <i data-lucide="printer" class="w-6 h-6 text-amber-500"></i>
+              GuardBench Executive Quality Audit Report
+            </h2>
+            <p class="text-xs text-slate-500 mt-1">경영진 및 감사팀 제출용 표준 1,000건 인쇄/PDF 리포트 모달</p>
+          </div>
+
+          <button onclick="printAuditReportV5()" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-2">
+            <i data-lucide="printer" class="w-4 h-4"></i>
+            리포트 즉시 인쇄 / PDF 저장
+          </button>
+        </div>
+
+        <!-- Printable Report Box -->
+        <div id="audit-report-modal-content" class="bg-white p-8 border border-slate-300 rounded-2xl shadow-lg">
+          <div id="audit-report-body"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-950 text-slate-400 py-6 text-center text-xs border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4">
+      <p>© 2026 GuardBench Team (KOSA AWS 3팀). All rights reserved.</p>
+      <p class="mt-1 text-slate-500">GuardBench Version 5 - Ultimate Enterprise Evaluation & Policy Configurator Edition</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

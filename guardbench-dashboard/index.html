@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GuardBench - Amazon Bedrock Guardrail Evaluation Dashboard</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    code, pre, .font-mono { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col">
+
+  <!-- Header / Navigation Bar -->
+  <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-lg flex items-center justify-center font-black text-xl text-white shadow-md shadow-blue-500/20">
+            GB
+          </div>
+          <div>
+            <h1 class="text-lg font-bold text-white tracking-tight flex items-center gap-2">
+              GuardBench
+              <span class="px-2 py-0.5 text-xs bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded font-semibold">AWS Bedrock Edition</span>
+            </h1>
+            <p class="text-xs text-slate-400">Automated Guardrail Regression & Evaluation Platform</p>
+          </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="flex items-center space-x-4">
+          <button id="nav-dashboard" class="px-3.5 py-2 text-sm font-semibold text-slate-200 hover:text-white hover:bg-slate-800 rounded-md transition flex items-center gap-2">
+            <i data-lucide="layout-dashboard" class="w-4 h-4 text-blue-400"></i>
+            대시보드 (Depth 1)
+          </button>
+          <button id="nav-runs" class="px-3.5 py-2 text-sm font-semibold text-slate-200 hover:text-white hover:bg-slate-800 rounded-md transition flex items-center gap-2">
+            <i data-lucide="list-checks" class="w-4 h-4 text-indigo-400"></i>
+            Test Runs (Depth 2)
+          </button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sub-Header / Breadcrumb Bar -->
+  <div class="bg-slate-950/50 border-b border-slate-800/60 py-2.5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between text-xs text-slate-400">
+      <div id="breadcrumb" class="flex items-center">
+        <!-- Dynamic Breadcrumb -->
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> SQS Worker: Active (Fargate)</span>
+        <span class="text-slate-600">|</span>
+        <span>Org: KOSA AWS Team 3</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Container -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- ========================================================================= -->
+    <!-- DEPTH 1: EXECUTIVE DASHBOARD VIEW                                         -->
+    <!-- ========================================================================= -->
+    <div id="depth-1-view" class="space-y-8">
+      
+      <!-- Top Metrics Overview -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+        <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-5 shadow-lg">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Test Runs</span>
+            <div class="p-2 bg-blue-500/10 text-blue-400 rounded-lg"><i data-lucide="play-circle" class="w-5 h-5"></i></div>
+          </div>
+          <div class="mt-3">
+            <div class="text-3xl font-extrabold text-white">142</div>
+            <div class="text-xs text-emerald-400 mt-1 flex items-center gap-1">
+              <i data-lucide="trending-up" class="w-3.5 h-3.5"></i> +12% this week
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-5 shadow-lg">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Security Regressions</span>
+            <div class="p-2 bg-red-500/10 text-red-400 rounded-lg"><i data-lucide="shield-alert" class="w-5 h-5"></i></div>
+          </div>
+          <div class="mt-3">
+            <div class="text-3xl font-extrabold text-red-400">2 <span class="text-sm font-normal text-slate-400">/ 100 cases</span></div>
+            <div class="text-xs text-red-400/80 mt-1">🚨 Immediate attention required</div>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-5 shadow-lg">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Execution Reliability</span>
+            <div class="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg"><i data-lucide="activity" class="w-5 h-5"></i></div>
+          </div>
+          <div class="mt-3">
+            <div class="text-3xl font-extrabold text-emerald-400">100%</div>
+            <div class="text-xs text-slate-400 mt-1">Execution Error ≠ Assertion Failure</div>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-5 shadow-lg">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Avg Latency (Bedrock)</span>
+            <div class="p-2 bg-indigo-500/10 text-indigo-400 rounded-lg"><i data-lucide="zap" class="w-5 h-5"></i></div>
+          </div>
+          <div class="mt-3">
+            <div class="text-3xl font-extrabold text-white">318<span class="text-sm font-normal text-slate-400"> ms</span></div>
+            <div class="text-xs text-emerald-400 mt-1">Fast asynchronous SQS fan-out</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid Row 2: Active Target Info & Change Distribution -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Target Info -->
+        <div class="lg:col-span-2 bg-slate-800/80 border border-slate-700/60 rounded-xl p-6 shadow-lg space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-700/60 pb-4">
+            <h3 class="font-bold text-white text-base flex items-center gap-2">
+              <i data-lucide="target" class="w-5 h-5 text-blue-400"></i>
+              Active Guardrail Comparison Target
+            </h3>
+            <span class="text-xs bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2.5 py-1 rounded-full font-mono">Test What You Deploy</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+            <div class="bg-slate-900/80 border border-slate-700/80 rounded-lg p-4">
+              <div class="text-xs text-slate-400 font-semibold mb-1 uppercase tracking-wider">Baseline Target (기준 버전)</div>
+              <div class="text-lg font-bold text-white">v1.2 (Published)</div>
+              <div class="text-xs text-slate-400 font-mono mt-1">ID: gr-base-8819</div>
+              <div class="mt-3 text-xs text-slate-300 bg-slate-800 p-2 rounded border border-slate-700">
+                기존 프로덕션에 실제 배포되어 있는 불변 고정 Target
+              </div>
+            </div>
+
+            <div class="bg-slate-900/80 border border-blue-500/30 rounded-lg p-4">
+              <div class="text-xs text-blue-400 font-semibold mb-1 uppercase tracking-wider">Candidate Target (후보 버전)</div>
+              <div class="text-lg font-bold text-blue-400">v2.0-MAT (Materialized)</div>
+              <div class="text-xs text-blue-300/80 font-mono mt-1">ID: gr-cand-9012</div>
+              <div class="mt-3 text-xs text-blue-200/90 bg-blue-950/40 p-2 rounded border border-blue-500/20">
+                Draft #14 변경사항을 numbered version으로 고정 직후 테스트
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Donut Chart -->
+        <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-6 shadow-lg flex flex-col justify-between">
+          <h3 class="font-bold text-white text-base border-b border-slate-700/60 pb-3 flex items-center justify-between">
+            <span>Change Classification</span>
+            <span class="text-xs text-slate-400 font-normal">TR-20260820-001</span>
+          </h3>
+          <div class="relative h-48 my-2">
+            <canvas id="overviewChart"></canvas>
+          </div>
+          <p class="text-xs text-slate-400 text-center">2축 분리 평가 (Assertion & Change Classification)</p>
+        </div>
+      </div>
+
+      <!-- Recent Test Runs Table -->
+      <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-6 shadow-lg space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-700/60 pb-4">
+          <div>
+            <h3 class="font-bold text-white text-lg flex items-center gap-2">
+              <i data-lucide="history" class="w-5 h-5 text-indigo-400"></i>
+              최근 Test Runs 현황
+            </h3>
+            <p class="text-xs text-slate-400">Amazon SQS 비동기 오케스트레이션으로 처리된 최근 테스트 집계</p>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-slate-300">
+            <thead class="bg-slate-900/60 text-xs uppercase font-semibold text-slate-400 border-b border-slate-700/80">
+              <tr>
+                <th class="py-3.5 px-4">Run ID</th>
+                <th class="py-3.5 px-4">Target Name</th>
+                <th class="py-3.5 px-4">Baseline → Candidate</th>
+                <th class="py-3.5 px-4">실행 일시</th>
+                <th class="py-3.5 px-4">Assertion Pass</th>
+                <th class="py-3.5 px-4">Quality Gate Verdict</th>
+                <th class="py-3.5 px-4 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody id="runs-table-body" class="bg-slate-900/30">
+              <!-- Dynamically Populated by app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- DEPTH 2: TEST RUN DETAIL & QUALITY GATE VIEW                              -->
+    <!-- ========================================================================= -->
+    <div id="depth-2-view" class="hidden space-y-8">
+      
+      <!-- Run Header & Quality Gate Banner -->
+      <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-6 shadow-lg space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-700/60 pb-6">
+          <div>
+            <div class="flex items-center gap-3">
+              <h2 class="text-2xl font-black text-white font-mono" id="run-title">TR-20260820-001</h2>
+              <span id="run-header-badge" class="px-3 py-1 rounded text-xs font-bold"></span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">Target Guardrail: <span id="run-target" class="text-white font-semibold"></span></p>
+          </div>
+
+          <div class="flex items-center space-x-3">
+            <button onclick="switchDepth(1)" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold rounded-lg transition">
+              ← 대시보드로 돌아가기
+            </button>
+          </div>
+        </div>
+
+        <!-- Resolution Metadata Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+          <div class="bg-slate-900/80 p-3.5 rounded-lg border border-slate-700/60">
+            <span class="text-slate-400 block font-semibold mb-1">Baseline Target</span>
+            <span id="run-baseline" class="text-white font-mono font-bold text-sm"></span>
+          </div>
+          <div class="bg-slate-900/80 p-3.5 rounded-lg border border-blue-500/30">
+            <span class="text-blue-400 block font-semibold mb-1">Candidate Target (Materialized)</span>
+            <span id="run-candidate" class="text-blue-400 font-mono font-bold text-sm"></span>
+          </div>
+          <div class="bg-slate-900/80 p-3.5 rounded-lg border border-slate-700/60">
+            <span class="text-slate-400 block font-semibold mb-1">Trigger Source</span>
+            <span id="run-trigger" class="text-slate-200 font-medium"></span>
+          </div>
+          <div class="bg-slate-900/80 p-3.5 rounded-lg border border-slate-700/60">
+            <span class="text-slate-400 block font-semibold mb-1">Created At</span>
+            <span id="run-date" class="text-slate-200 font-mono"></span>
+          </div>
+        </div>
+
+        <!-- 2-Axis Classification Breakdown Cards -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">2축 분리 평가 분류 결과 (Change Classification)</h4>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            
+            <div onclick="filterTestCases('ALL')" class="cursor-pointer bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700 p-4 rounded-xl transition">
+              <div class="text-xs font-semibold text-slate-400">NO_CHANGE (동일)</div>
+              <div id="count-no-change" class="text-2xl font-black text-slate-300 mt-1">85</div>
+              <div class="text-[10px] text-slate-500 mt-1">Baseline과 Candidate 결과 동일</div>
+            </div>
+
+            <div onclick="filterTestCases('IMPROVEMENT')" class="cursor-pointer bg-slate-900/90 hover:bg-slate-800/90 border border-emerald-500/40 p-4 rounded-xl transition">
+              <div class="text-xs font-semibold text-emerald-400">IMPROVEMENT (개선)</div>
+              <div id="count-improvement" class="text-2xl font-black text-emerald-400 mt-1">9</div>
+              <div class="text-[10px] text-emerald-400/70 mt-1">Candidate에서 새로 통과/차단 성공</div>
+            </div>
+
+            <div onclick="filterTestCases('USABILITY_REGRESSION')" class="cursor-pointer bg-slate-900/90 hover:bg-slate-800/90 border border-amber-500/40 p-4 rounded-xl transition">
+              <div class="text-xs font-semibold text-amber-400">USABILITY_REGRESSION (사용성 저하)</div>
+              <div id="count-usability" class="text-2xl font-black text-amber-400 mt-1">4</div>
+              <div class="text-[10px] text-amber-400/70 mt-1">정상 질의에 대한 오탐(False Positive) 차단</div>
+            </div>
+
+            <div onclick="filterTestCases('SECURITY_REGRESSION')" class="cursor-pointer bg-slate-900/90 hover:bg-slate-800/90 border border-red-500/60 p-4 rounded-xl transition bg-red-950/20">
+              <div class="text-xs font-semibold text-red-400 flex items-center gap-1">
+                SECURITY_REGRESSION 🚨
+              </div>
+              <div id="count-security" class="text-2xl font-black text-red-400 mt-1">2</div>
+              <div class="text-[10px] text-red-400/80 mt-1">보안 필터 미탐(False Negative) 허용 🚨</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Test Cases Table -->
+      <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-6 shadow-lg space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
+          <h3 class="font-bold text-white text-lg flex items-center gap-2">
+            <i data-lucide="file-text" class="w-5 h-5 text-blue-400"></i>
+            Test Case Execution Table (100 Cases)
+          </h3>
+
+          <div class="flex items-center space-x-2 text-xs">
+            <span class="text-slate-400 font-semibold">필터:</span>
+            <button onclick="filterTestCases('ALL')" class="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 rounded text-slate-200">전체 보기</button>
+            <button onclick="filterTestCases('SECURITY_REGRESSION')" class="px-2.5 py-1 bg-red-500/20 text-red-300 border border-red-500/30 rounded font-semibold">보안 결함만 보기 (2)</button>
+            <button onclick="filterTestCases('IMPROVEMENT')" class="px-2.5 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded font-semibold">개선건만 보기 (9)</button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-slate-300">
+            <thead class="bg-slate-900/60 text-xs uppercase font-semibold text-slate-400 border-b border-slate-700/80">
+              <tr>
+                <th class="py-3.5 px-4">Case ID</th>
+                <th class="py-3.5 px-4">Category</th>
+                <th class="py-3.5 px-4">Prompt (입력 프롬프트)</th>
+                <th class="py-3.5 px-4">Baseline (v1.2)</th>
+                <th class="py-3.5 px-4">Candidate (v2.0-MAT)</th>
+                <th class="py-3.5 px-4">Change Classification</th>
+                <th class="py-3.5 px-4 text-right">Inspect</th>
+              </tr>
+            </thead>
+            <tbody id="cases-table-body" class="bg-slate-900/30">
+              <!-- Dynamically Populated by app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- DEPTH 3: TEST CASE DEEP DIVE & EVALUATION INSPECTOR                       -->
+    <!-- ========================================================================= -->
+    <div id="depth-3-view" class="hidden space-y-8">
+      
+      <!-- Test Case Metadata Banner -->
+      <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-6 shadow-lg space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
+          <div>
+            <div class="flex items-center gap-3">
+              <h2 class="text-2xl font-black text-white font-mono" id="tc-id">TC-SEC-042</h2>
+              <span id="tc-classification-badge"></span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">Category: <span id="tc-category" class="text-slate-200 font-semibold"></span></p>
+          </div>
+
+          <button onclick="switchDepth(2, selectedRunId)" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold rounded-lg transition">
+            ← Test Run 목록으로 돌아가기
+          </button>
+        </div>
+
+        <!-- Input Prompt Box -->
+        <div class="space-y-2">
+          <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Evaluated Input Prompt (입력 프롬프트)</label>
+          <div class="bg-slate-950 border border-slate-800 rounded-lg p-4 text-sm font-mono text-slate-200 leading-relaxed" id="tc-prompt">
+            <!-- Dynamic Prompt -->
+          </div>
+          <div class="text-xs text-slate-500">Context: <span id="tc-context" class="italic"></span></div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Baseline vs Candidate Evaluation Inspector -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Baseline Card -->
+        <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-6 shadow-lg space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-700/60 pb-3">
+            <h3 class="font-bold text-slate-300 text-base flex items-center gap-2">
+              <i data-lucide="shield-check" class="w-5 h-5 text-slate-400"></i>
+              Baseline Evaluation (<span id="base-ver"></span>)
+            </h3>
+            <span class="text-xs bg-slate-700 text-slate-300 px-2.5 py-1 rounded font-semibold">Assertion: <span id="base-assertion"></span></span>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div class="flex justify-between py-2 border-b border-slate-700/40">
+              <span class="text-slate-400">Bedrock Action:</span>
+              <span id="base-action" class="font-mono font-bold text-sm text-red-400"></span>
+            </div>
+            <div class="flex justify-between py-2 border-b border-slate-700/40">
+              <span class="text-slate-400">Triggered Filter:</span>
+              <span id="base-filter" class="font-medium text-slate-200"></span>
+            </div>
+            <div class="py-2 border-b border-slate-700/40">
+              <span class="text-slate-400 block mb-1">Actual Result Description:</span>
+              <span id="base-result" class="text-slate-300 font-mono bg-slate-900 p-2 rounded block"></span>
+            </div>
+
+            <!-- Trace JSON -->
+            <div>
+              <span class="text-slate-400 block mb-1 font-semibold">Bedrock Guardrail Trace Log:</span>
+              <pre id="base-trace" class="bg-slate-950 border border-slate-800 p-3 rounded text-[11px] text-slate-300 overflow-x-auto max-h-48"></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Candidate Card -->
+        <div class="bg-slate-800/80 border border-red-500/40 rounded-xl p-6 shadow-lg space-y-4 bg-red-950/10">
+          <div class="flex items-center justify-between border-b border-red-500/30 pb-3">
+            <h3 class="font-bold text-red-400 text-base flex items-center gap-2">
+              <i data-lucide="alert-triangle" class="w-5 h-5 text-red-400"></i>
+              Candidate Evaluation (<span id="cand-ver"></span>)
+            </h3>
+            <span class="text-xs bg-red-500/20 text-red-300 border border-red-500/30 px-2.5 py-1 rounded font-semibold">Assertion: <span id="cand-assertion"></span></span>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div class="flex justify-between py-2 border-b border-slate-700/40">
+              <span class="text-slate-400">Bedrock Action:</span>
+              <span id="cand-action" class="font-mono font-bold text-sm text-red-400 underline"></span>
+            </div>
+            <div class="flex justify-between py-2 border-b border-slate-700/40">
+              <span class="text-slate-400">Triggered Filter:</span>
+              <span id="cand-filter" class="font-medium text-slate-200"></span>
+            </div>
+            <div class="py-2 border-b border-slate-700/40">
+              <span class="text-slate-400 block mb-1">Actual Result Description:</span>
+              <span id="cand-result" class="text-red-200 font-mono bg-slate-900 p-2 rounded block border border-red-500/30"></span>
+            </div>
+
+            <!-- Trace JSON -->
+            <div>
+              <span class="text-slate-400 block mb-1 font-semibold">Bedrock Guardrail Trace Log:</span>
+              <pre id="cand-trace" class="bg-slate-950 border border-slate-800 p-3 rounded text-[11px] text-slate-300 overflow-x-auto max-h-48"></pre>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-950 border-t border-slate-800 py-6 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4">
+      <p>© 2026 GuardBench Team (KOSA AWS 3팀). All rights reserved.</p>
+      <p class="mt-1 text-slate-600">Built with Spring Boot 3, Amazon Bedrock Guardrails, SQS, ECS Fargate & PostgreSQL</p>
+    </div>
+  </footer>
+
+  <!-- App Script -->
+  <script src="app.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

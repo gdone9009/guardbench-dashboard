@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GuardBench v2 - Departmental TestSuite & Security Evaluation Platform</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    body { font-family: 'Pretendard', sans-serif; }
+    code, pre, .font-mono { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
+
+  <!-- Header & Primary Nav -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Brand Logo -->
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTabV2('dashboard')">
+          <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center font-black text-xl text-white shadow-md shadow-blue-500/20">
+            GB
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-lg font-extrabold text-slate-900 tracking-tight">GuardBench</h1>
+              <span class="px-2 py-0.5 text-[11px] bg-blue-100 text-blue-700 font-bold rounded-full border border-blue-200">v2.0 TestSuite Edition</span>
+            </div>
+            <p class="text-xs text-slate-500">부서별 TestSuite & Amazon Bedrock Guardrails 회귀 검증</p>
+          </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <nav class="flex items-center space-x-1.5 text-xs font-bold">
+          <button id="tab-btn-dashboard" class="px-3 py-2 rounded-xl bg-blue-600 text-white shadow-md transition flex items-center gap-1.5">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+            대시보드
+          </button>
+          <button id="tab-btn-suites" class="px-3 py-2 rounded-xl text-slate-600 hover:bg-slate-100 transition flex items-center gap-1.5">
+            <i data-lucide="folder-tree" class="w-4 h-4 text-purple-500"></i>
+            TestSuite 개요
+          </button>
+          <button id="tab-btn-runs" class="px-3 py-2 rounded-xl text-slate-600 hover:bg-slate-100 transition flex items-center gap-1.5">
+            <i data-lucide="shield-check" class="w-4 h-4 text-indigo-500"></i>
+            Test Runs
+          </button>
+          <button id="tab-btn-inspector" class="px-3 py-2 rounded-xl text-slate-600 hover:bg-slate-100 transition flex items-center gap-1.5">
+            <i data-lucide="search" class="w-4 h-4 text-emerald-500"></i>
+            상세 분석
+          </button>
+          <button id="tab-btn-sandbox" class="px-3 py-2 rounded-xl text-slate-600 hover:bg-slate-100 transition flex items-center gap-1.5">
+            <i data-lucide="flask-conical" class="w-4 h-4 text-amber-500"></i>
+            실시간 샌드박스
+          </button>
+          <button id="tab-btn-glossary" class="px-3 py-2 rounded-xl text-slate-600 hover:bg-slate-100 transition flex items-center gap-1.5">
+            <i data-lucide="help-circle" class="w-4 h-4 text-purple-500"></i>
+            용어집
+          </button>
+        </nav>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Sub Notification Banner -->
+  <div class="bg-blue-50/80 border-b border-blue-100 py-2.5 px-4">
+    <div class="max-w-7xl mx-auto flex items-center justify-between text-xs text-blue-900">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+        <span class="font-bold">시스템 상태:</span>
+        <span>4개 부서별 TestSuite (자산관리부, 정보보안팀, 인사총무팀, 고객지원팀) 16개 케이스 가동 중</span>
+      </div>
+      <span class="text-blue-700/80 font-mono">소속: KOSA AWS 3팀</span>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- ========================================================================= -->
+    <!-- VIEW 1: EXECUTIVE DASHBOARD V2                                            -->
+    <!-- ========================================================================= -->
+    <div id="view-dashboard" class="space-y-8">
+      
+      <!-- Top Alert Banner if Failure -->
+      <div class="bg-red-50 border-2 border-red-200 rounded-2xl p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
+        <div class="flex items-center gap-4">
+          <div class="p-3 bg-red-100 text-red-600 rounded-xl">
+            <i data-lucide="shield-alert" class="w-7 h-7"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-base font-extrabold text-red-900">최근 품질 게이트 상태: 배포 차단 (FAILED)</h3>
+              <span class="px-2.5 py-0.5 bg-red-600 text-white font-mono font-bold text-xs rounded-full">TR-20260820-001</span>
+            </div>
+            <p class="text-xs text-red-700 mt-1">
+              신규 후보 버전(<span class="font-mono font-bold">v2.0-MAT</span>)에서 <strong>3건의 심각한 보안 결함(Security Regression - 정보보안팀 2건, 인사총무팀 1건)</strong>이 감지되었습니다.
+            </p>
+          </div>
+        </div>
+        <button onclick="switchTabV2('runs', 'TR-20260820-001')" class="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition shadow-md whitespace-nowrap">
+          결함 케이스 즉시 확인 →
+        </button>
+      </div>
+
+      <!-- Quick KPI Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm space-y-2">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">총 검증 Test Runs</span>
+          <div class="text-3xl font-black text-slate-900">142 <span class="text-xs text-slate-500 font-normal">회</span></div>
+          <p class="text-[11px] text-emerald-600 flex items-center gap-1 font-semibold"><i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> 자동화 스케줄 가동 중</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm space-y-2">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">평가 통과율 (Pass Rate)</span>
+          <div class="text-3xl font-black text-blue-600">91.5 %</div>
+          <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+            <div class="bg-blue-600 h-full w-[91.5%]"></div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm space-y-2">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">보안 결함 (Security Regression)</span>
+          <div class="text-3xl font-black text-red-600">3 <span class="text-xs text-slate-500 font-normal">건</span></div>
+          <p class="text-[11px] text-red-500 font-semibold">🚨 즉시 수정 조치 필요</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm space-y-2">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">실행 신뢰도 (Execution Reliability)</span>
+          <div class="text-3xl font-black text-emerald-600">100 %</div>
+          <p class="text-[11px] text-slate-500">인프라 오류 0건 (100% 평가 완료)</p>
+        </div>
+      </div>
+
+      <!-- Mid Layout: Target Info & Chart -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Target comparison overview -->
+        <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+            <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+              <i data-lucide="git-compare" class="w-5 h-5 text-blue-600"></i>
+              현재 비교 대상 가드레일 버전
+            </h3>
+            <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg font-mono">Test What You Deploy</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+              <span class="text-xs font-bold text-slate-500 uppercase">Baseline Target (현재 배포 버전)</span>
+              <div class="text-lg font-black text-slate-800">v1.2 (Published)</div>
+              <p class="text-xs text-slate-600">운영 환경에 실제 반영되어 있는 검증 기준선 가드레일</p>
+            </div>
+
+            <div class="bg-blue-50/70 p-4 rounded-xl border border-blue-200 space-y-2">
+              <span class="text-xs font-bold text-blue-600 uppercase">Candidate Target (검증 대상 버전)</span>
+              <div class="text-lg font-black text-blue-700">v2.0-MAT (Materialized)</div>
+              <p class="text-xs text-blue-900/80">Draft 변경 사항을 불변 버전으로 고정(Materialization) 후 테스트</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Donut / Bar Chart -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-3">
+          <h3 class="font-extrabold text-slate-900 text-base border-b border-slate-100 pb-3">2축 분리 평가 분포 (16 Cases)</h3>
+          <div class="relative h-44">
+            <canvas id="chartV2"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Departmental TestSuites Summary Grid -->
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="font-extrabold text-slate-900 text-lg flex items-center gap-2">
+            <i data-lucide="folder-tree" class="w-5 h-5 text-purple-600"></i>
+            부서별 / 기능별 TestSuite 검증 현황
+          </h3>
+          <button onclick="switchTabV2('suites')" class="text-xs text-blue-600 font-bold hover:underline">모든 슈트 상세 보기 →</button>
+        </div>
+
+        <div id="suites-summary-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <!-- Populated by app.js -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- VIEW: TEST SUITES OVERVIEW V2                                             -->
+    <!-- ========================================================================= -->
+    <div id="view-suites" class="hidden space-y-8">
+      <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+        <h2 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+          <i data-lucide="folder-tree" class="w-6 h-6 text-purple-600"></i>
+          부서별 / 기능별 TestSuite 종합 가이드
+        </h2>
+        <p class="text-xs text-slate-500">
+          GuardBench의 1대N `TestSuite : TestCase` 도메인 관계에 따라 조직별 보안 목표별로 묶인 케이스들의 전체 세부 항목입니다.
+        </p>
+
+        <div id="suites-full-grid" class="space-y-6 pt-4">
+          <!-- Populated by app.js -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- VIEW 2: RUNS & QUALITY GATE V2                                            -->
+    <!-- ========================================================================= -->
+    <div id="view-runs" class="hidden space-y-8">
+      
+      <!-- Run Title & Header -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          <div>
+            <h2 id="run-title-v2" class="text-2xl font-black text-slate-900"></h2>
+            <p id="run-meta-v2" class="text-xs text-slate-500 mt-1"></p>
+          </div>
+          <button onclick="switchTabV2('dashboard')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition">
+            ← 대시보드로 돌아가기
+          </button>
+        </div>
+
+        <!-- 4 Stats Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+          <div onclick="setFilterChipV2('NO_CHANGE')" class="cursor-pointer bg-slate-50 hover:bg-slate-100 p-4 rounded-xl border border-slate-200 transition">
+            <span class="text-xs font-bold text-slate-500">동일 (No Change)</span>
+            <div id="stat-nochange" class="text-2xl font-black text-slate-700 mt-1">10</div>
+          </div>
+          <div onclick="setFilterChipV2('IMPROVEMENT')" class="cursor-pointer bg-emerald-50 hover:bg-emerald-100 p-4 rounded-xl border border-emerald-200 transition">
+            <span class="text-xs font-bold text-emerald-700">✨ 개선 (Improvement)</span>
+            <div id="stat-improvement" class="text-2xl font-black text-emerald-600 mt-1">3</div>
+          </div>
+          <div onclick="setFilterChipV2('USABILITY_REGRESSION')" class="cursor-pointer bg-amber-50 hover:bg-amber-100 p-4 rounded-xl border border-amber-200 transition">
+            <span class="text-xs font-bold text-amber-700">⚠️ 사용성 저하 (Usability)</span>
+            <div id="stat-usability" class="text-2xl font-black text-amber-600 mt-1">2</div>
+          </div>
+          <div onclick="setFilterChipV2('SECURITY_REGRESSION')" class="cursor-pointer bg-red-50 hover:bg-red-100 p-4 rounded-xl border border-red-200 transition">
+            <span class="text-xs font-bold text-red-700">🚨 보안 결함 (Security)</span>
+            <div id="stat-security" class="text-2xl font-black text-red-600 mt-1">3</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Test Cases Filter & Table -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+        
+        <!-- Search Bar & Filter Chips -->
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+            <!-- Suite Selector -->
+            <select id="suite-select-filter" onchange="handleSuiteFilterChange(this.value)" class="bg-slate-50 border border-slate-200 text-xs font-bold rounded-xl px-3 py-2 text-slate-700 focus:outline-none">
+              <option value="ALL">🏢 전체 TestSuite 보기 (16개)</option>
+              <option value="SUITE-FIN-01">자산관리부 - 금융 리스크 & PII</option>
+              <option value="SUITE-SEC-02">정보보안팀 - AI 프론트엔드 방어</option>
+              <option value="SUITE-HR-03">인사총무팀 - 사내 기밀 & 연봉</option>
+              <option value="SUITE-CS-04">고객지원팀 - CS 챗봇 & 비속어</option>
+            </select>
+
+            <!-- Search Bar -->
+            <div class="relative w-full sm:w-64">
+              <input type="text" oninput="handleSearchInputV2(this.value)" placeholder="프롬프트, ID, 카테고리 검색..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-2 text-xs font-bold overflow-x-auto w-full md:w-auto">
+            <button onclick="setFilterChipV2('ALL')" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg whitespace-nowrap">전체 보기</button>
+            <button onclick="setFilterChipV2('SECURITY_REGRESSION')" class="px-3 py-1.5 bg-red-100 text-red-700 border border-red-200 rounded-lg whitespace-nowrap">🚨 보안 결함만 보기 (3)</button>
+            <button onclick="setFilterChipV2('IMPROVEMENT')" class="px-3 py-1.5 bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg whitespace-nowrap">✨ 개선건만 보기 (3)</button>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-slate-700">
+            <thead class="bg-slate-50 text-xs font-bold uppercase text-slate-500 border-b border-slate-200">
+              <tr>
+                <th class="py-3 px-4">Case ID</th>
+                <th class="py-3 px-4">부서</th>
+                <th class="py-3 px-4">보안 카테고리</th>
+                <th class="py-3 px-4">테스트 프롬프트</th>
+                <th class="py-3 px-4">Baseline (v1.2)</th>
+                <th class="py-3 px-4">Candidate (v2.0-MAT)</th>
+                <th class="py-3 px-4">2축 평가 분류</th>
+                <th class="py-3 px-4 text-right">상세 분석</th>
+              </tr>
+            </thead>
+            <tbody id="cases-tbody-v2">
+              <!-- Populated by app.js -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- VIEW 3: INSPECTOR V2                                                      -->
+    <!-- ========================================================================= -->
+    <div id="view-inspector" class="hidden space-y-8">
+      
+      <!-- Top Info -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div class="flex items-center gap-3">
+            <h2 id="insp-tc-id" class="text-2xl font-black text-slate-900 font-mono"></h2>
+            <span id="insp-tc-badge"></span>
+          </div>
+          <button onclick="switchTabV2('runs')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition">
+            ← 목록으로 돌아가기
+          </button>
+        </div>
+
+        <div>
+          <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">테스트 프롬프트 (Evaluated Input)</label>
+          <div id="insp-tc-prompt" class="p-4 bg-slate-900 text-slate-100 rounded-xl font-mono text-sm leading-relaxed"></div>
+          <div class="text-xs text-slate-500 mt-2">카테고리: <span id="insp-tc-category" class="font-bold text-slate-700"></span> | 컨텍스트: <span id="insp-tc-context" class="italic"></span></div>
+        </div>
+      </div>
+
+      <!-- Side by Side Comparison Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Baseline -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h3 class="font-extrabold text-slate-800 text-base">Baseline (<span id="insp-base-ver"></span>)</h3>
+            <span id="insp-base-assertion" class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs font-bold rounded-md"></span>
+          </div>
+          <div class="space-y-2 text-xs">
+            <div><span class="text-slate-400">가드레일 동작:</span> <span id="insp-base-action" class="font-bold text-red-600"></span></div>
+            <div><span class="text-slate-400">적용된 필터:</span> <span id="insp-base-filter" class="font-medium text-slate-700"></span></div>
+            <div class="pt-2"><span class="text-slate-400 block mb-1">결과 설명:</span> <div id="insp-base-desc" class="p-3 bg-slate-50 border rounded-lg text-slate-700 font-mono"></div></div>
+          </div>
+        </div>
+
+        <!-- Candidate -->
+        <div class="bg-white rounded-2xl p-6 border-2 border-red-200 shadow-sm space-y-4 bg-red-50/30">
+          <div class="flex items-center justify-between border-b border-red-100 pb-3">
+            <h3 class="font-extrabold text-red-700 text-base">Candidate (<span id="insp-cand-ver"></span>)</h3>
+            <span id="insp-cand-assertion" class="px-2.5 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-md"></span>
+          </div>
+          <div class="space-y-2 text-xs">
+            <div><span class="text-slate-400">가드레일 동작:</span> <span id="insp-cand-action" class="font-bold text-red-600 underline"></span></div>
+            <div><span class="text-slate-400">적용된 필터:</span> <span id="insp-cand-filter" class="font-medium text-slate-700"></span></div>
+            <div class="pt-2"><span class="text-slate-400 block mb-1">결과 설명:</span> <div id="insp-cand-desc" class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-900 font-mono"></div></div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- VIEW 4: INTERACTIVE SANDBOX V2                                            -->
+    <!-- ========================================================================= -->
+    <div id="view-sandbox" class="hidden space-y-8">
+      
+      <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-6">
+        <div>
+          <h2 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+            <i data-lucide="flask-conical" class="w-6 h-6 text-amber-500"></i>
+            대화형 가드레일 실시간 샌드박스 시뮤레이터
+          </h2>
+          <p class="text-xs text-slate-500 mt-1">
+            원하는 질의나 공격 프롬프트를 입력하여 Baseline(v1.2)과 Candidate(v2.0-MAT) 가드레일 동작 차이를 직접 시뮬레이션해보세요.
+          </p>
+        </div>
+
+        <!-- Preset Chips -->
+        <div class="space-y-2">
+          <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block">샘플 프롬프트 원클릭 테스트</label>
+          <div id="sandbox-presets" class="flex flex-wrap gap-2">
+            <!-- Populated by app.js -->
+          </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="space-y-3">
+          <textarea id="sandbox-prompt-input" rows="3" placeholder="시뮬레이션할 프롬프트를 입력하거나 위 프리셋 버튼을 눌러보세요..." class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono leading-relaxed"></textarea>
+          
+          <button onclick="runSandboxSimulation()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl shadow-md transition flex items-center gap-2">
+            <i data-lucide="play" class="w-4 h-4"></i>
+            가드레일 비교 시뮬레이션 실행
+          </button>
+        </div>
+
+        <!-- Result Section -->
+        <div id="sandbox-result-container" class="hidden space-y-6 border-t border-slate-100 pt-6">
+          <div class="flex items-center justify-between">
+            <h3 class="font-extrabold text-slate-900 text-base">시뮬레이션 결과 비교</h3>
+            <div id="sb-verdict"></div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-2">
+              <span class="text-xs font-bold text-slate-500 uppercase">Baseline (v1.2) 예상 동작</span>
+              <div id="sb-base-res"></div>
+            </div>
+            <div class="bg-blue-50/50 p-5 rounded-xl border border-blue-200 space-y-2">
+              <span class="text-xs font-bold text-blue-600 uppercase">Candidate (v2.0-MAT) 예상 동작</span>
+              <div id="sb-cand-res"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- VIEW 5: GLOSSARY & HELP V2                                                -->
+    <!-- ========================================================================= -->
+    <div id="view-glossary" class="hidden space-y-8">
+      <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+        <h2 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+          <i data-lucide="book-open" class="w-6 h-6 text-purple-600"></i>
+          GuardBench 핵심 용어 및 도메인 지식 가이드
+        </h2>
+        <p class="text-xs text-slate-500">
+          GuardBench의 2축 분리 평가 및 Amazon Bedrock Guardrail 검증에 사용되는 주요 기술 용어를 쉽게 설명합니다.
+        </p>
+
+        <div id="glossary-cards" class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-4">
+          <!-- Populated by app.js -->
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4">
+      <p>© 2026 GuardBench Team (KOSA AWS 3팀). All rights reserved.</p>
+      <p class="mt-1 text-slate-400">GuardBench Version 2 - Departmental TestSuite & Security Evaluation Edition</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
