@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GuardBench - AWS Infrastructure Architecture Portal</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Mermaid.js -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    body { font-family: 'Pretendard', sans-serif; }
+    code, pre, .font-mono { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white">
+
+  <!-- Header Section -->
+  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div class="flex items-center space-x-4 cursor-pointer" onclick="location.href='index.html'">
+        <div class="w-12 h-12 bg-gradient-to-tr from-amber-500 via-orange-600 to-red-600 rounded-2xl flex items-center justify-center font-black text-2xl text-white shadow-lg shadow-orange-500/25 ring-1 ring-white/20">
+          AWS
+        </div>
+        <div>
+          <h1 class="text-xl font-black tracking-tight text-white flex items-center gap-2">
+            GuardBench AWS Infrastructure
+            <span class="px-2.5 py-0.5 text-xs bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full font-mono font-bold">IaC & Topology</span>
+          </h1>
+          <p class="text-xs text-slate-400">Terraform 기반 AWS 비동기 8단계 아키텍처 개념도 포털</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <a href="index.html" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 text-xs font-bold rounded-xl transition flex items-center gap-2">
+          <i data-lucide="layout-dashboard" class="w-4 h-4"></i> 대시보드 포털
+        </a>
+        <a href="https://github.com/GuardBench/guardbench-iac" target="_blank" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-xl transition shadow-md flex items-center gap-2">
+          <i data-lucide="git-branch" class="w-4 h-4"></i> Terraform Repo
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="py-12 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 border-b border-slate-800/80">
+    <div class="max-w-5xl mx-auto px-4 text-center space-y-4">
+      <div class="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 border border-amber-500/30 rounded-full text-amber-400 text-xs font-semibold">
+        <i data-lucide="cloud-lightning" class="w-3.5 h-3.5"></i> AWS Async Message-Driven Architecture
+      </div>
+      <h2 class="text-3xl sm:text-4xl font-black text-white tracking-tight leading-tight">
+        GuardBench AWS 클라우드 인프라 개념도
+      </h2>
+      <p class="text-sm text-slate-400 max-w-3xl mx-auto leading-relaxed">
+        Amazon Bedrock Guardrails 자동 검증을 위해 **VPC 격리 네트워크**, **SQS 4대 비동기 큐**, **ECS Fargate 워커**, **PostgreSQL RDS**, 그리고 **Terraform(IaC)**으로 구축된 8단계 엔터프라이즈 인프라 아키텍처입니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- Interactive Content Container -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+
+    <!-- 1. ARCHITECTURE MERMAID FLOWCHART -->
+    <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-8 shadow-2xl space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div>
+          <h3 class="text-xl font-black text-white flex items-center gap-2">
+            <i data-lucide="network" class="w-6 h-6 text-amber-400"></i>
+            인프라 비동기 8단계 흐름 개념도 (Infrastructure Flowchart)
+          </h3>
+          <p class="text-xs text-slate-400 mt-1">API 요청 접수부터 Bedrock 연동, RDS 기록 및 최종 배포 승인 시그널까지의 데이터 흐름</p>
+        </div>
+        <span class="px-3 py-1 bg-slate-800 text-amber-300 font-mono text-xs font-bold rounded-lg">SQS 4-Queue Pipeline</span>
+      </div>
+
+      <!-- Mermaid Diagram -->
+      <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800/80 overflow-x-auto flex justify-center">
+        <pre class="mermaid text-xs">
+flowchart TD
+    classDef client fill:#1e293b,stroke:#475569,color:#f8fafc;
+    classDef sqs fill:#f59e0b,stroke:#d97706,color:#fff,stroke-width:2px;
+    classDef orchestrator fill:#2563eb,stroke:#1d4ed8,color:#fff,stroke-width:2px;
+    classDef worker fill:#9333ea,stroke:#7e22ce,color:#fff,stroke-width:2px;
+    classDef bedrock fill:#059669,stroke:#047857,color:#fff,stroke-width:2px;
+    classDef rds fill:#0284c7,stroke:#0369a1,color:#fff,stroke-width:2px;
+
+    Client["① Client / CI/CD (TestRun 생성 요청)"]:::client -->|POST /api/v1/test-runs| SQS_FIFO["② SQS gb-run-resolve (FIFO 큐)<br/>- Run 생성 멱등성 보장"]:::sqs
+    
+    SQS_FIFO -->|Consumes Signal| Orch["③ Spring Boot Orchestrator<br/>- Target Materialization (v2.0-MAT)<br/>- TestCaseSnapshot 불변 고정"]:::orchestrator
+    
+    Orch -->|Fan-Out WorkItems| SQS_WorkItems["④ SQS gb-workitems (Standard 큐)<br/>- 1,000건 대용량 비동기 팬아웃"]:::sqs
+    
+    SQS_WorkItems -->|Consumes Tasks| Worker["⑤ ECS Fargate Executor Workers<br/>- 오토스케일링 병렬 처리"]:::worker
+    
+    Worker -->|ApplyGuardrail API| Bedrock["⑥ Amazon Bedrock Guardrails<br/>- PII, Prompt Injection, Content Filter"]:::bedrock
+    Bedrock -->|Trace Payload| Worker
+    
+    Worker -->|Append-Only Write| RDS[("⑦ RDS PostgreSQL Database<br/>- test_executions 결과 기록")]:::rds
+    
+    Worker -->|Completion Signal| SQS_Finalize["⑧ SQS gb-run-finalize (Standard 큐)<br/>- Run 완료 시그널 전송"]:::sqs
+    
+    SQS_Finalize -->|Final Trigger| Orch
+    Orch -->|Calculate Verdict| QualityGate["🏁 Quality Gate Verdict<br/>(PASSED 🟢 / FAILED 🔴)"]:::orchestrator
+    
+    SQS_WorkItems -.->|Failed Retries| DLQ["🚨 SQS gb-workitems-dlq (DLQ)<br/>- 실패 메시지 격리 & Sweeper"]:::sqs
+        </pre>
+      </div>
+    </div>
+
+    <!-- 2. AWS TOPOLOGY COMPONENTS GRID -->
+    <div class="space-y-6">
+      <h3 class="text-xl font-black text-white flex items-center gap-2">
+        <i data-lucide="layers" class="w-6 h-6 text-blue-400"></i>
+        AWS 인프라 핵심 토폴로지 구성 요약 (Topology Components)
+      </h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- VPC Subnet -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-3 hover:border-slate-700 transition">
+          <div class="w-10 h-10 bg-amber-500/10 text-amber-400 rounded-xl flex items-center justify-center font-bold">
+            <i data-lucide="shield-check" class="w-5 h-5"></i>
+          </div>
+          <h4 class="font-extrabold text-white text-base">VPC & Network Topology</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Public Subnet(ALB, NAT Gateway)과 Private Subnet(ECS Fargate, RDS PostgreSQL)을 철저히 분리하여 보안 격리를 달성했습니다.
+          </p>
+          <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-amber-300 font-mono text-[11px] font-bold rounded">module.vpc</span>
+        </div>
+
+        <!-- SQS 4 Queues -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-3 hover:border-slate-700 transition">
+          <div class="w-10 h-10 bg-orange-500/10 text-orange-400 rounded-xl flex items-center justify-center font-bold">
+            <i data-lucide="mail" class="w-5 h-5"></i>
+          </div>
+          <h4 class="font-extrabold text-white text-base">SQS 4-Queue Pipeline</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            FIFO 멱등성 큐, WorkItem 팬아웃 큐, Finalize 완료 시그널 큐, DLQ 장애 격리 큐 등 4대 비동기 메시지 파이프라인.
+          </p>
+          <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-orange-300 font-mono text-[11px] font-bold rounded">module.sqs</span>
+        </div>
+
+        <!-- ECS Fargate -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-3 hover:border-slate-700 transition">
+          <div class="w-10 h-10 bg-purple-500/10 text-purple-400 rounded-xl flex items-center justify-center font-bold">
+            <i data-lucide="cpu" class="w-5 h-5"></i>
+          </div>
+          <h4 class="font-extrabold text-white text-base">ECS Fargate Workers</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            서버리스 컨테이너 기반 엑세큐터 워커가 Amazon Bedrock `ApplyGuardrail` API를 수천 건 병렬 호출하여 평가를 수행합니다.
+          </p>
+          <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-purple-300 font-mono text-[11px] font-bold rounded">module.ecs</span>
+        </div>
+
+        <!-- RDS PostgreSQL -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-3 hover:border-slate-700 transition">
+          <div class="w-10 h-10 bg-blue-500/10 text-blue-400 rounded-xl flex items-center justify-center font-bold">
+            <i data-lucide="database" class="w-5 h-5"></i>
+          </div>
+          <h4 class="font-extrabold text-white text-base">RDS PostgreSQL Multi-Schema</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            `test_runs`, `test_cases`, `test_case_snapshots` 스냅샷 테이블로 평가 이력과 불변 복사본을 안전하게 저장합니다.
+          </p>
+          <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-blue-300 font-mono text-[11px] font-bold rounded">module.rds</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 3. TERRAFORM IAC PRACTICE GUIDE -->
+    <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-8 shadow-2xl space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div>
+          <h3 class="text-xl font-black text-white flex items-center gap-2">
+            <i data-lucide="terminal" class="w-6 h-6 text-emerald-400"></i>
+            팀원 개인 AWS 계정 테라폼(Terraform) 실습 가이드
+          </h3>
+          <p class="text-xs text-slate-400 mt-1">콘솔 클릭 없이 코드 한 줄로 5분 만에 동일 인프라를 복제 배포하고 요금 발생 없이 삭제합니다.</p>
+        </div>
+        <span class="px-3 py-1 bg-emerald-500/20 text-emerald-300 font-mono text-xs font-bold rounded-lg border border-emerald-500/30">IaC Standard</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs font-mono">
+        <!-- Apply Step -->
+        <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-3">
+          <span class="text-emerald-400 font-bold block text-sm">🚀 1. 테라폼 인프라 5분 자동 배포</span>
+          <pre class="text-slate-300 leading-relaxed">git clone git@github.com:GuardBench/guardbench-iac.git
+cd guardbench-iac
+
+# 개인 계정 변수 설정 (terraform.tfvars)
+aws_region  = "ap-northeast-2"
+environment = "dev-myname"
+
+# 자동 배포 실행
+terraform init
+terraform apply -auto-approve</pre>
+        </div>
+
+        <!-- Destroy Step -->
+        <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-3">
+          <span class="text-red-400 font-bold block text-sm">🧹 2. 실습 후 과금 방지 전체 자동 삭제</span>
+          <pre class="text-slate-300 leading-relaxed"># 실습이 종료되면 생성되었던 
+# VPC, SQS, ECS, RDS 자원 전체 삭제
+
+terraform destroy -auto-approve
+
+# 결과: AWS 요금 0원 유지!</pre>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800 bg-slate-950 py-8 text-center text-xs text-slate-500 space-y-2">
+    <p>© 2026 GuardBench Team (KOSA AWS 3팀). All rights reserved.</p>
+    <p class="text-slate-600">Built with Amazon Bedrock Guardrails, SQS, ECS Fargate, PostgreSQL & Terraform</p>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+    mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+  </script>
+</body>
+</html>
