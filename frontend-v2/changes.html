@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>프론트엔드 v2 후보 — 변경 내용과 이유</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    body { font-family: 'Pretendard', sans-serif; }
+    code, .font-mono { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen antialiased">
+
+  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-black text-sm">GB</div>
+        <div>
+          <h1 class="font-bold text-white">프론트엔드 v2 후보</h1>
+          <p class="text-xs text-slate-400">변경 내용과 변경 이유</p>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <a href="index.html" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5"><i data-lucide="eye" class="w-3.5 h-3.5"></i> v2 화면 보기</a>
+        <a href="../index.html" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl transition">← 포탈</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-6 py-12 space-y-12">
+
+    <!-- Intro -->
+    <section class="space-y-4">
+      <span class="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 border border-indigo-500/30 rounded-full text-indigo-400 text-xs font-semibold">
+        <i data-lucide="git-compare" class="w-3.5 h-3.5"></i> v2 Candidate · 사용성 개선안
+      </span>
+      <h2 class="text-3xl font-black text-white">현재 화면을 더 쉽게 만들었습니다</h2>
+      <p class="text-slate-400 leading-relaxed text-sm">
+        현재 공식 프론트엔드는 도메인 전문가에게는 정확하지만, 처음 보는 사용자에게는 전문 용어(Baseline, Candidate, Assertion, Quality Gate, Snapshot...)가 많아 이해가 어렵습니다.
+        v2 후보는 <strong class="text-white">API 계약과 도메인 규칙의 의미는 그대로 유지</strong>하면서, 화면의 표현·명칭·설명만 사용자 친화적으로 개선한 제안입니다.
+      </p>
+      <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 text-xs text-emerald-300 flex items-start gap-2">
+        <i data-lucide="shield-check" class="w-4 h-4 mt-0.5 shrink-0"></i>
+        <span><strong>지켜진 것:</strong> 3축 상태 분리 원칙, 평가 계약(보안 회귀 0건 등 Quality Gate 기준), API 엔드포인트·요청/응답 구조, enum 값의 실제 의미. 화면 표현만 바꿨고 데이터 계약은 건드리지 않았습니다.</span>
+      </div>
+    </section>
+
+    <!-- 변경 1: 용어 -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-blue-500/15 rounded-lg flex items-center justify-center text-blue-400 font-black text-sm">1</div>
+        <h3 class="text-xl font-bold text-white">전문 용어에 쉬운 이름과 툴팁을 붙였습니다</h3>
+      </div>
+      <p class="text-sm text-slate-400">핵심 도메인 용어는 화면에서 쉬운 표현으로 바꾸되, 원래 용어를 괄호와 툴팁으로 함께 보여줘 정확성을 잃지 않게 했습니다.</p>
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-slate-700 text-left">
+              <th class="py-2 px-3 text-slate-400">기존 표현</th>
+              <th class="py-2 px-3 text-slate-400">v2 표현</th>
+              <th class="py-2 px-3 text-slate-400">변경 이유</th>
+            </tr>
+          </thead>
+          <tbody class="text-slate-300">
+            <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">Baseline</td><td class="py-2 px-3 font-bold text-white">현재 운영 정책 <span class="text-slate-500">(Baseline)</span></td><td class="py-2 px-3">"무엇을 비교하는지" 직관적으로 전달</td></tr>
+            <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">Candidate</td><td class="py-2 px-3 font-bold text-white">변경 예정 정책 <span class="text-slate-500">(Candidate)</span></td><td class="py-2 px-3">검증 대상임을 명확히</td></tr>
+            <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">Expected</td><td class="py-2 px-3 font-bold text-white">정답</td><td class="py-2 px-3">"사람이 정한 기대 동작"을 쉽게</td></tr>
+            <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">Assertion (PASS/FAIL)</td><td class="py-2 px-3 font-bold text-white">정답 일치 (일치/불일치)</td><td class="py-2 px-3">Gate 판정과 헷갈리지 않게</td></tr>
+            <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">Change</td><td class="py-2 px-3 font-bold text-white">이전 대비 변화</td><td class="py-2 px-3">비교의 의미를 서술형으로</td></tr>
+            <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">Security/Usability Regression</td><td class="py-2 px-3 font-bold text-white">보안 회귀 / 과잉 차단</td><td class="py-2 px-3">한글 지표명 + 한 줄 설명 툴팁</td></tr>
+            <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">Quality Gate PASS/FAIL</td><td class="py-2 px-3 font-bold text-white">배포 가능 / 배포 차단</td><td class="py-2 px-3">최종 결론을 행동 중심으로</td></tr>
+            <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">Snapshot</td><td class="py-2 px-3 font-bold text-white">테스트 (건)</td><td class="py-2 px-3">일반 사용자에게 익숙한 단위로</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 변경 2: 3축 상태 -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-blue-500/15 rounded-lg flex items-center justify-center text-blue-400 font-black text-sm">2</div>
+        <h3 class="text-xl font-bold text-white">혼동되던 3가지 상태를 눈에 보이게 분리했습니다</h3>
+      </div>
+      <p class="text-sm text-slate-400">
+        기존 화면은 <strong class="text-slate-200">진행 상태 · 실행 결과 · 배포 판정</strong>을 각각 배지로만 표시해, 사용자가 "실행 오류"와 "배포 차단"과 "판정 불가"를 헷갈리기 쉬웠습니다.
+        v2는 결과 상세 상단에 <strong class="text-slate-200">3단계 설명 카드</strong>를 추가해 각 상태가 무엇을 뜻하고 어떤 순서로 흐르는지 한눈에 보여줍니다.
+      </p>
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs text-slate-300">
+        <p class="mb-2"><strong class="text-blue-400">1. 진행 상태</strong> — 검증 작업이 어디까지 왔나 (대기 → 준비 → 검증 → 종료)</p>
+        <p class="mb-2"><strong class="text-amber-400">2. 실행 결과</strong> — 테스트가 오류 없이 다 돌았나 (정상/부분/오류)</p>
+        <p><strong class="text-red-400">3. 배포 판정</strong> — 이 정책을 배포해도 안전한가 (가능/차단/판정불가)</p>
+      </div>
+      <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-xs text-amber-200 flex items-start gap-2">
+        <i data-lucide="lightbulb" class="w-4 h-4 mt-0.5 shrink-0"></i>
+        <span>이 분리는 팀의 APPROVED 계약(<code class="text-amber-300">HTTP 오류 ≠ Execution ERROR ≠ Assertion FAIL ≠ Quality Gate FAIL</code>)을 그대로 반영한 것으로, 규칙을 바꾼 게 아니라 규칙을 <strong>더 잘 보이게</strong> 만든 것입니다.</span>
+      </div>
+    </section>
+
+    <!-- 변경 3: 버그 -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-red-500/15 rounded-lg flex items-center justify-center text-red-400 font-black text-sm">3</div>
+        <h3 class="text-xl font-bold text-white">오라벨 버그를 바로잡았습니다</h3>
+      </div>
+      <p class="text-sm text-slate-400">
+        기존 코드에서 상세 비교 모달의 <code class="text-slate-300">StatusPill</code>이 <code class="text-slate-300">kind="assertion"</code> 없이 호출되어,
+        테스트의 <strong class="text-slate-200">정답 일치(PASS)</strong>가 화면에 <strong class="text-red-300">"Gate 통과"</strong>로 잘못 표시되는 문제가 있었습니다.
+        (근거: <code class="text-slate-300">src/components/common/StatusPill.tsx</code>의 generic 분기가 raw <code>PASS</code>를 gate로 해석)
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+        <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+          <p class="font-bold text-red-300 mb-1">기존 (잘못됨)</p>
+          <p class="text-slate-300">테스트 정답 일치 → <span class="line-through">"Gate 통과"</span> 로 표시</p>
+        </div>
+        <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4">
+          <p class="font-bold text-emerald-300 mb-1">v2 (수정)</p>
+          <p class="text-slate-300">테스트 정답 일치 → <strong>"일치"</strong> 로 표시 (배포 판정과 완전 분리)</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 변경 4: 개발자 문구 -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-blue-500/15 rounded-lg flex items-center justify-center text-blue-400 font-black text-sm">4</div>
+        <h3 class="text-xl font-bold text-white">개발자용 문구를 사용자 문구로 바꿨습니다</h3>
+      </div>
+      <p class="text-sm text-slate-400">화면에 노출되던 API 경로와 기술 용어를 사용자 언어로 교체했습니다. (동작은 동일, 표시만 변경)</p>
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-slate-700 text-left">
+              <th class="py-2 px-3 text-slate-400">기존 (개발자 문구)</th>
+              <th class="py-2 px-3 text-slate-400">v2 (사용자 문구)</th>
+            </tr>
+          </thead>
+          <tbody class="text-slate-300">
+            <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">POST /api/v1/test-suites →</td><td class="py-2 px-3">"이름, 설명, 초기 테스트를 한 번에 등록"</td></tr>
+            <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">(DELETE /test-cases)</td><td class="py-2 px-3">"테스트 케이스가 삭제되었습니다"</td></tr>
+            <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">materialize / numbered Version</td><td class="py-2 px-3">"초안을 고정된 버전으로 발행"</td></tr>
+            <tr class="border-b border-slate-800"><td class="py-2 px-3">"리포트" (영문 혼용)</td><td class="py-2 px-3">"보고서 저장"</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 변경 5: 설명/팁 -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-blue-500/15 rounded-lg flex items-center justify-center text-blue-400 font-black text-sm">5</div>
+        <h3 class="text-xl font-bold text-white">지표마다 "왜 중요한지" 설명을 추가했습니다</h3>
+      </div>
+      <p class="text-sm text-slate-400">4개 지표 카드(기대 동작 충족률, 보안 회귀, 과잉 차단, 실행 성공률)에 합격 기준과 의미를 툴팁·부제로 붙였습니다. 특히 보안 회귀 카드는 "허용치 0건" 배지와 붉은 강조로 <strong class="text-slate-200">가장 중요한 지표임을 시각적으로 부각</strong>했습니다.</p>
+      <p class="text-sm text-slate-400">판정 테이블 하단에는 <strong class="text-slate-200">용어 범례</strong>를 상시 표시해, 표를 보다가 바로 의미를 확인할 수 있게 했습니다.</p>
+    </section>
+
+    <!-- 적용 방법 -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-3">
+        <i data-lucide="git-branch" class="w-5 h-5 text-emerald-400"></i>
+        <h3 class="text-xl font-bold text-white">실제 코드 반영 시 (제안)</h3>
+      </div>
+      <p class="text-sm text-slate-400">이 v2는 개인 레포의 프로토타입입니다. 실제 <code class="text-slate-300">guardbench-frontend</code>(기관 레포)에 반영한다면 다음 범위로 Issue를 나누길 권합니다:</p>
+      <ul class="text-sm text-slate-300 space-y-2 list-disc list-inside">
+        <li><strong>라벨 레이어</strong>: <code class="text-slate-400">StatusPill.tsx</code>의 label 매핑과 assertion kind 버그 수정 (독립 커밋)</li>
+        <li><strong>용어/툴팁</strong>: 각 View의 문구를 상수로 분리하고 툴팁 컴포넌트 추가</li>
+        <li><strong>설명 카드</strong>: ResultDetail 상단 3축 안내 카드 컴포넌트 추가</li>
+        <li><strong>정리</strong>: 화면 노출 API 문구 제거, <code class="text-slate-400">SuiteStatus</code>의 <code>'ACTIVE'</code>/<code>'활성'</code> 불일치 정리</li>
+      </ul>
+      <p class="text-xs text-slate-500">※ 기관 레포 변경은 팀의 워크플로(Issue → worktree → 리뷰 → 승인)를 따릅니다. 이 프로토타입은 그 논의의 출발점입니다.</p>
+    </section>
+
+  </main>
+
+  <footer class="border-t border-slate-800 bg-slate-950 py-6 text-center text-xs text-slate-500 space-y-1">
+    <p>&copy; 2026 GuardBench Team (KOSA AWS 3팀)</p>
+    <p><a href="index.html" class="text-indigo-400 hover:underline">v2 화면</a> · <a href="../project-status.html" class="text-indigo-400 hover:underline">프로젝트 현황</a> · <a href="../index.html" class="text-indigo-400 hover:underline">포탈</a></p>
+  </footer>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>
