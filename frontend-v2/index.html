@@ -48,11 +48,11 @@
       </div>
       <nav class="flex-grow p-4 space-y-1 text-sm">
         <p class="text-[10px] text-[#a4b0bd] font-bold uppercase tracking-wider px-3 mb-2">작업 공간</p>
-        <a onclick="goList()" class="nav-item cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-xl bg-[#eef4fa] text-[#246fa8] font-bold"><i data-lucide="history" class="w-4 h-4"></i> 실행 이력</a>
-        <a class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#566271] hover:bg-[#f6f8fa] cursor-pointer"><i data-lucide="layers" class="w-4 h-4"></i> 테스트 묶음</a>
-        <a class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#566271] hover:bg-[#f6f8fa] cursor-pointer"><i data-lucide="play-circle" class="w-4 h-4"></i> 새 검증 실행</a>
+        <a id="nav-list" onclick="goList()" class="nav-item cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#566271] hover:bg-[#f6f8fa]"><i data-lucide="history" class="w-4 h-4"></i> 실행 이력</a>
+        <a id="nav-suites" onclick="goSuites()" class="nav-item cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#566271] hover:bg-[#f6f8fa]"><i data-lucide="layers" class="w-4 h-4"></i> 테스트 묶음</a>
+        <a id="nav-newrun" onclick="goNewRun()" class="nav-item cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#566271] hover:bg-[#f6f8fa]"><i data-lucide="play-circle" class="w-4 h-4"></i> 새 검증 실행</a>
         <p class="text-[10px] text-[#a4b0bd] font-bold uppercase tracking-wider px-3 mb-2 mt-4">시스템</p>
-        <a class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#566271] hover:bg-[#f6f8fa] cursor-pointer"><i data-lucide="network" class="w-4 h-4"></i> 아키텍처</a>
+        <a id="nav-arch" onclick="goArch()" class="nav-item cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#566271] hover:bg-[#f6f8fa]"><i data-lucide="network" class="w-4 h-4"></i> 아키텍처</a>
       </nav>
       <div class="p-4 border-t border-[#e5e9ee]">
         <div class="bg-[#f1faf6] rounded-xl p-3 text-[11px]">
@@ -218,6 +218,108 @@
               <span><strong class="text-[#8fa0ad]">— 판정 안 됨</strong> = 실행이 끝나지 않아 비교 불가</span>
             </div>
           </article>
+        </section>
+
+        <!-- ============ 테스트 묶음 ============ -->
+        <section id="view-suites" class="view space-y-6">
+          <div class="flex items-end justify-between gap-4">
+            <div>
+              <div class="text-[#246fa8] text-xs font-black tracking-widest uppercase mb-1.5">테스트 묶음</div>
+              <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">테스트 묶음 관리</h1>
+              <p class="text-[#697586] text-sm mt-1.5">검증 목적별로 테스트 케이스를 묶어 관리합니다. 카드를 클릭하면 포함된 테스트를 볼 수 있습니다.</p>
+            </div>
+            <button onclick="goNewRun()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#17202a] text-white text-xs font-bold hover:bg-[#253545]"><i data-lucide="play-circle" class="w-3.5 h-3.5"></i> 새 검증 실행</button>
+          </div>
+          <div id="suites-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </section>
+
+        <!-- ============ 새 검증 실행 ============ -->
+        <section id="view-newrun" class="view space-y-6">
+          <div>
+            <div class="text-[#246fa8] text-xs font-black tracking-widest uppercase mb-1.5">새 검증 실행</div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">새 검증 실행</h1>
+            <p class="text-[#697586] text-sm mt-1.5">현재 운영 정책과 변경 예정 정책(초안)을 같은 테스트 묶음으로 비교합니다.</p>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-5">
+            <div class="space-y-5">
+              <div class="bg-white border border-[#e5e9ee] rounded-2xl p-5 shadow-sm">
+                <h2 class="text-sm font-bold mb-1">1. 테스트 범위</h2>
+                <p class="text-[11px] text-[#8fa0ad] mb-3">실행할 테스트 묶음을 선택하면 포함된 테스트가 스냅샷으로 복제됩니다.</p>
+                <label class="text-xs font-bold text-[#566271] block mb-1.5">테스트 묶음</label>
+                <select id="nr-suite" onchange="updateSummary()" class="w-full border border-[#e5e9ee] rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#246fa8]">
+                  <option value="고객센터 안전성|24">고객센터 안전성 · 24건</option>
+                  <option value="금융 상담 기본|18">금융 상담 기본 · 18건</option>
+                  <option value="개인정보 보호|16">개인정보 보호 · 16건</option>
+                </select>
+              </div>
+              <div class="bg-white border border-[#e5e9ee] rounded-2xl p-5 shadow-sm">
+                <h2 class="text-sm font-bold mb-1">2. 현재 운영 정책 (Baseline)</h2>
+                <p class="text-[11px] text-[#8fa0ad] mb-3">비교 기준이 되는, 지금 운영 중인 Guardrail 버전입니다.</p>
+                <div class="grid grid-cols-2 gap-3">
+                  <div><label class="text-xs font-bold text-[#566271] block mb-1.5">Guardrail ID</label><input value="5fhc7mmi6k6b" class="w-full border border-[#e5e9ee] rounded-xl px-3 py-2.5 text-sm font-mono"></div>
+                  <div><label class="text-xs font-bold text-[#566271] block mb-1.5">버전</label><input id="nr-base-v" value="7" onchange="updateSummary()" class="w-full border border-[#e5e9ee] rounded-xl px-3 py-2.5 text-sm font-mono"></div>
+                </div>
+              </div>
+              <div class="bg-white border border-[#e5e9ee] rounded-2xl p-5 shadow-sm">
+                <h2 class="text-sm font-bold mb-1">3. 변경 예정 정책 (Candidate)</h2>
+                <p class="text-[11px] text-[#8fa0ad] mb-3">새로 배포하려는 정책입니다. 초안(DRAFT)은 실행 전 고정된 버전으로 발행됩니다.</p>
+                <div class="grid grid-cols-2 gap-3">
+                  <div><label class="text-xs font-bold text-[#566271] block mb-1.5">Guardrail ID</label><input value="x75oniydy7uf" class="w-full border border-[#e5e9ee] rounded-xl px-3 py-2.5 text-sm font-mono"></div>
+                  <div><label class="text-xs font-bold text-[#566271] block mb-1.5">버전 / 초안</label><input id="nr-cand-v" value="DRAFT → 8" onchange="updateSummary()" class="w-full border border-[#e5e9ee] rounded-xl px-3 py-2.5 text-sm font-mono"></div>
+                </div>
+                <div class="mt-3 bg-[#fff7e8] border border-[#f0dcae] rounded-xl p-3 text-[11px] text-[#8a5410]">초안을 직접 실행하지 않고, 고정된 버전으로 발행한 뒤 현재 정책과 동일한 테스트로 실행합니다.</div>
+              </div>
+            </div>
+            <div class="lg:sticky lg:top-24 self-start">
+              <div class="bg-white border border-[#e5e9ee] rounded-2xl p-5 shadow-sm space-y-3">
+                <h2 class="text-sm font-bold">실행 요약</h2>
+                <div class="text-xs space-y-2">
+                  <div class="flex justify-between"><span class="text-[#697586]">테스트 묶음</span><b id="sum-suite">고객센터 안전성</b></div>
+                  <div class="flex justify-between"><span class="text-[#697586]">테스트 케이스</span><b id="sum-cases">24건</b></div>
+                  <div class="flex justify-between"><span class="text-[#697586]">예상 실행 수</span><b id="sum-exec">48회</b></div>
+                  <div class="flex justify-between"><span class="text-[#697586]">현재 정책</span><b id="sum-base">버전 7</b></div>
+                  <div class="flex justify-between"><span class="text-[#697586]">변경 예정 정책</span><b id="sum-cand">DRAFT → 8</b></div>
+                </div>
+                <div class="bg-[#fff7e8] border border-[#f0dcae] rounded-xl p-3 text-[11px] text-[#8a5410]">실행 요청 후 대상과 스냅샷은 변경할 수 없습니다. 예상 소요 약 1–2분.</div>
+                <button onclick="submitRun()" class="w-full py-2.5 bg-[#246fa8] hover:bg-[#1f5f90] text-white rounded-xl text-sm font-bold">검증 실행 요청</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ 아키텍처 ============ -->
+        <section id="view-arch" class="view space-y-6">
+          <div>
+            <div class="text-[#246fa8] text-xs font-black tracking-widest uppercase mb-1.5">시스템 맵</div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">아키텍처 &amp; 도메인</h1>
+            <p class="text-[#697586] text-sm mt-1.5">MVP 컴포넌트와 핵심 도메인 규칙입니다.</p>
+          </div>
+          <div class="bg-white border border-[#e5e9ee] rounded-2xl p-6 shadow-sm">
+            <h2 class="text-sm font-bold mb-4">실행 흐름</h2>
+            <div class="space-y-2 text-xs">
+              <div class="flex items-center gap-3"><div class="w-8 h-8 bg-[#eef4fa] rounded-lg flex items-center justify-center shrink-0"><i data-lucide="user" class="w-4 h-4 text-[#246fa8]"></i></div><div class="flex-grow bg-[#f6f8fa] rounded-lg p-3"><b>사용자 / CI</b> — 검증 실행 요청</div></div>
+              <div class="ml-4 h-3 w-0.5 bg-[#e5e9ee]"></div>
+              <div class="flex items-center gap-3"><div class="w-8 h-8 bg-[#e9f7f1] rounded-lg flex items-center justify-center shrink-0"><i data-lucide="server" class="w-4 h-4 text-[#1a7f5a]"></i></div><div class="flex-grow bg-[#f6f8fa] rounded-lg p-3"><b>Spring Boot · 오케스트레이터</b> — 대상 확정 · 스냅샷 고정</div></div>
+              <div class="ml-4 h-3 w-0.5 bg-[#e5e9ee]"></div>
+              <div class="flex items-center gap-3"><div class="w-8 h-8 bg-[#fff7e8] rounded-lg flex items-center justify-center shrink-0"><i data-lucide="layers" class="w-4 h-4 text-[#a56512]"></i></div><div class="flex-grow bg-[#f6f8fa] rounded-lg p-3"><b>Amazon SQS · 워커</b> — 테스트 단위 비동기 실행</div></div>
+              <div class="ml-4 h-3 w-0.5 bg-[#e5e9ee]"></div>
+              <div class="flex items-center gap-3"><div class="w-8 h-8 bg-[#eef4fa] rounded-lg flex items-center justify-center shrink-0"><i data-lucide="shield" class="w-4 h-4 text-[#246fa8]"></i></div><div class="flex-grow bg-[#f6f8fa] rounded-lg p-3"><b>Guardrail 어댑터</b> — ApplyGuardrail · 응답 정규화</div></div>
+              <div class="ml-4 h-3 w-0.5 bg-[#e5e9ee]"></div>
+              <div class="flex items-center gap-3"><div class="w-8 h-8 bg-[#f3e8ff] rounded-lg flex items-center justify-center shrink-0"><i data-lucide="scale" class="w-4 h-4 text-[#7c3aed]"></i></div><div class="flex-grow bg-[#f6f8fa] rounded-lg p-3"><b>평가 엔진</b> — 순수 도메인 판정 (정답 일치 · 변화 분류)</div></div>
+              <div class="ml-4 h-3 w-0.5 bg-[#e5e9ee]"></div>
+              <div class="flex items-center gap-3"><div class="w-8 h-8 bg-[#fff0ef] rounded-lg flex items-center justify-center shrink-0"><i data-lucide="flag" class="w-4 h-4 text-[#bd3b35]"></i></div><div class="flex-grow bg-[#f6f8fa] rounded-lg p-3"><b>배포 판정 (Quality Gate)</b> — 배포 가능 · 배포 차단 · 판정 불가</div></div>
+            </div>
+          </div>
+          <div class="bg-white border border-[#e5e9ee] rounded-2xl p-6 shadow-sm">
+            <h2 class="text-sm font-bold mb-4">핵심 도메인 규칙</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+              <div class="bg-[#f6f8fa] rounded-xl p-4"><b class="text-[#246fa8]">01. 정답은 사람이 정의</b><p class="text-[#566271] mt-1">Guardrail 출력 자체를 정답으로 쓰지 않습니다.</p></div>
+              <div class="bg-[#f6f8fa] rounded-xl p-4"><b class="text-[#246fa8]">02. 동일 스냅샷 비교</b><p class="text-[#566271] mt-1">현재/변경 예정 정책은 같은 불변 테스트를 공유합니다.</p></div>
+              <div class="bg-[#f6f8fa] rounded-xl p-4"><b class="text-[#246fa8]">03. 실행과 판정 분리</b><p class="text-[#566271] mt-1">실행 오류, 정답 불일치, 비교 불가는 서로 다릅니다.</p></div>
+              <div class="bg-[#f6f8fa] rounded-xl p-4"><b class="text-[#246fa8]">04. 초안 고정</b><p class="text-[#566271] mt-1">초안을 고정된 버전으로 발행한 뒤 실행합니다.</p></div>
+              <div class="bg-[#f6f8fa] rounded-xl p-4"><b class="text-[#246fa8]">05. 배포 판정은 별도 축</b><p class="text-[#566271] mt-1">실행 신뢰성이 부족하면 차단이 아니라 판정 불가입니다.</p></div>
+            </div>
+          </div>
         </section>
 
       </main>
@@ -432,19 +534,92 @@
     }
     function closeDrawer(){ document.getElementById('drawer').classList.remove('open'); document.getElementById('drawer-backdrop').classList.remove('open'); }
 
+    // ===== 테스트 묶음 데이터 =====
+    const SUITES = [
+      { name:'고객센터 안전성', desc:'고객센터 챗봇의 개인정보, 공격적 표현, 정책 우회 요청을 검증합니다.', count:24, pass:'98.1%', last:'18분 전', status:'활성', icon:'🛡️', tint:'#e9f7f1',
+        cases:[
+          {n:'개인정보 탈취 요청 차단', a:'차단', sev:'치명적', cat:'PII'},
+          {n:'시스템 프롬프트 노출 시도', a:'차단', sev:'높음', cat:'프롬프트 인젝션'},
+          {n:'일반 환불 절차 문의', a:'허용', sev:'보통', cat:'정상 이용'},
+        ]},
+      { name:'금융 상담 기본', desc:'금융 조언의 면책 고지, 과도한 수익 보장, 개인정보 노출을 점검합니다.', count:18, pass:'100%', last:'1시간 전', status:'활성', icon:'₩', tint:'#eef4fa',
+        cases:[{n:'수익 보장 확답 요구', a:'차단', sev:'높음', cat:'금융'}]},
+      { name:'개인정보 보호', desc:'주민등록번호, 연락처, 계좌정보 등 PII 정책 동작을 집중 검증합니다.', count:16, pass:'96.8%', last:'어제', status:'활성', icon:'ID', tint:'#fff0ef', cases:[]},
+      { name:'사내 AI 어시스턴트', desc:'사내 문서 접근, 프롬프트 인젝션, 비밀정보 요청을 검증합니다.', count:31, pass:'93.5%', last:'어제', status:'검토 필요', icon:'⌘', tint:'#f3effa', cases:[]},
+      { name:'다국어 안전성', desc:'한국어·영어·일본어 입력에서 안전정책의 일관성을 확인합니다.', count:9, pass:'—', last:'미실행', status:'초안', icon:'文', tint:'#fff7e8', cases:[]},
+    ];
+    function suiteStatusPill(s){ const m={'활성':'bg-[#e9f7f1] text-[#1a7f5a]','검토 필요':'bg-[#fff7e8] text-[#a56512]','초안':'bg-[#eef1f4] text-[#586473]'}; return pill(s, m[s]); }
+
+    function renderSuites(){
+      document.getElementById('suites-grid').innerHTML = SUITES.map((s,i) => `
+        <article onclick="toast('${s.name} 상세: 테스트 ${s.count}건 (목업)')" class="bg-white border border-[#e5e9ee] rounded-2xl p-5 shadow-sm hover:border-[#246fa8]/40 cursor-pointer transition">
+          <div class="flex items-center justify-between mb-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center font-bold" style="background:${s.tint}">${s.icon}</div>
+            ${suiteStatusPill(s.status)}
+          </div>
+          <b class="block text-sm">${s.name}</b>
+          <p class="text-xs text-[#697586] mt-1 leading-relaxed line-clamp-2">${s.desc}</p>
+          <div class="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-[#f1f3f5] text-center">
+            <div><div class="text-[10px] text-[#8fa0ad]">테스트</div><b class="text-sm">${s.count}</b></div>
+            <div><div class="text-[10px] text-[#8fa0ad]">최근 통과율</div><b class="text-sm text-[#1a7f5a]">${s.pass}</b></div>
+            <div><div class="text-[10px] text-[#8fa0ad]">마지막 실행</div><b class="text-[11px]">${s.last}</b></div>
+          </div>
+        </article>`).join('') +
+        `<article onclick="goNewRun()" class="border-2 border-dashed border-[#d5dce3] rounded-2xl p-5 flex flex-col items-center justify-center text-center cursor-pointer hover:border-[#246fa8] hover:bg-[#f6f8fa] transition min-h-[180px]">
+          <i data-lucide="plus-circle" class="w-8 h-8 text-[#a4b0bd] mb-2"></i>
+          <b class="text-sm text-[#566271]">새 테스트 묶음</b>
+          <p class="text-[11px] text-[#8fa0ad] mt-1">이름, 설명, 초기 테스트를 한 번에 등록합니다.</p>
+        </article>`;
+      lucide.createIcons();
+    }
+
+    // ===== 새 검증 실행 =====
+    function updateSummary(){
+      const [name,count] = document.getElementById('nr-suite').value.split('|');
+      document.getElementById('sum-suite').textContent = name;
+      document.getElementById('sum-cases').textContent = count + '건';
+      document.getElementById('sum-exec').textContent = (count*2) + '회';
+      document.getElementById('sum-base').textContent = '버전 ' + document.getElementById('nr-base-v').value;
+      document.getElementById('sum-cand').textContent = document.getElementById('nr-cand-v').value;
+    }
+    function submitRun(){
+      toast('새 검증 실행이 접수되었습니다. (목업) 실행 이력에서 진행 상태를 확인하세요.');
+      setTimeout(goList, 900);
+    }
+
+    // ===== toast =====
+    function toast(msg){
+      let t = document.getElementById('toast');
+      if(!t){ t = document.createElement('div'); t.id='toast'; t.className='fixed bottom-6 right-6 bg-[#17202a] text-white text-sm px-4 py-3 rounded-xl shadow-2xl z-[70] flex items-center gap-2'; document.body.appendChild(t); }
+      t.innerHTML = `<span class="text-[#5ce0a8]">✓</span> ${msg}`;
+      t.style.opacity = '1';
+      clearTimeout(window._tt);
+      window._tt = setTimeout(() => { t.style.opacity = '0'; t.style.transition='opacity .3s'; }, 2800);
+    }
+
     // ===== 뷰 전환 & breadcrumb =====
+    const NAV = { list:'nav-list', suites:'nav-suites', newrun:'nav-newrun', arch:'nav-arch' };
+    const CRUMB = { list:'실행 이력', suites:'테스트 묶음', newrun:'새 검증 실행', arch:'아키텍처' };
     function switchView(name){
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
       document.getElementById('view-' + name).classList.add('active');
+      // nav 하이라이트
+      Object.values(NAV).forEach(id => { const el=document.getElementById(id); if(el){ el.className='nav-item cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#566271] hover:bg-[#f6f8fa]'; }});
+      const navKey = name === 'detail' ? 'list' : name;
+      if(NAV[navKey]){ document.getElementById(NAV[navKey]).className='nav-item cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-xl bg-[#eef4fa] text-[#246fa8] font-bold'; }
+      // breadcrumb
       const bc = document.getElementById('breadcrumb');
-      if(name === 'list'){
-        bc.innerHTML = `GuardBench / <b class="text-[#17202a]">실행 이력</b>`;
-      } else {
+      if(name === 'detail'){
         bc.innerHTML = `<a onclick="goList()" class="cursor-pointer hover:text-[#246fa8]">실행 이력</a> <span>/</span> <b class="text-[#17202a]">결과 상세 ${currentRun.id}</b>`;
+      } else {
+        bc.innerHTML = `GuardBench / <b class="text-[#17202a]">${CRUMB[name]}</b>`;
       }
       window.scrollTo(0,0);
     }
     function goList(){ closeDrawer(); switchView('list'); }
+    function goSuites(){ closeDrawer(); renderSuites(); switchView('suites'); }
+    function goNewRun(){ closeDrawer(); updateSummary(); switchView('newrun'); }
+    function goArch(){ closeDrawer(); switchView('arch'); lucide.createIcons(); }
 
     // init
     renderList();
