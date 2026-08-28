@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GuardBench - 프로젝트 현황</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    body { font-family: 'Pretendard', sans-serif; }
+    code, pre, .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .prose h2 { scroll-margin-top: 6rem; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white">
+
+  <!-- Header -->
+  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="index.html" class="w-10 h-10 bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 rounded-xl flex items-center justify-center font-black text-lg text-white shadow-lg shadow-blue-500/25">GB</a>
+        <div>
+          <h1 class="text-lg font-bold text-white">프로젝트 현황</h1>
+          <p class="text-xs text-slate-400">2026-08-28 기준</p>
+        </div>
+      </div>
+      <a href="index.html" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl transition border border-slate-700">← 포탈로 돌아가기</a>
+    </div>
+  </header>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex gap-8">
+
+    <!-- Sidebar TOC -->
+    <aside class="hidden lg:block w-64 shrink-0">
+      <nav class="sticky top-24 space-y-1 text-xs">
+        <p class="text-slate-400 font-bold uppercase tracking-wider mb-3 text-[10px]">목차</p>
+        <a href="#overview" class="block px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition">1. 프로젝트 개요</a>
+        <a href="#repositories" class="block px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition">2. 리포지토리 구성</a>
+        <a href="#backend" class="block px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition">3. Backend 현황</a>
+        <a href="#frontend" class="block px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition">4. Frontend 현황</a>
+        <a href="#infrastructure" class="block px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition">5. Infrastructure 현황</a>
+        <a href="#architecture" class="block px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition">6. 아키텍처 요약</a>
+        <a href="#timeline" class="block px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition">7. 개발 타임라인</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-grow min-w-0 space-y-12">
+
+      <!-- Section 1: Overview -->
+      <section id="overview" class="space-y-6">
+        <h2 class="text-2xl font-black text-white border-b border-slate-800 pb-4">1. 프로젝트 개요</h2>
+
+        <div class="bg-gradient-to-r from-blue-950/40 to-slate-900 border border-blue-500/30 rounded-2xl p-6 space-y-4">
+          <p class="text-sm text-slate-200 leading-relaxed">
+            <strong class="text-white">GuardBench</strong>는 Amazon Bedrock Guardrails의 정책 변경 전후를 동일한 테스트 자산으로 실행하고,
+            기대 동작 위반과 보안 회귀를 자동 구분하는 <span class="text-blue-400 font-semibold">AI Security Regression Test Platform</span>이다.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+            <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800">
+              <span class="text-red-400 font-bold block mb-1">🛡️ Security Regression</span>
+              <span class="text-slate-300">차단해야 할 공격이 통과되는 위험 탐지</span>
+            </div>
+            <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800">
+              <span class="text-amber-400 font-bold block mb-1">⚠️ Usability Regression</span>
+              <span class="text-slate-300">허용해야 할 정상 요청이 차단되는 과잉 탐지</span>
+            </div>
+            <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800">
+              <span class="text-emerald-400 font-bold block mb-1">✅ Quality Gate</span>
+              <span class="text-slate-300">자동화된 배포 판정 (PASS / FAIL)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap-4 text-xs">
+          <div class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-3">
+            <span class="text-slate-400">팀:</span> <span class="text-white font-bold">KOSA AWS 3팀 (5인)</span>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-3">
+            <span class="text-slate-400">기간:</span> <span class="text-white font-bold">2026-08-14 ~ 현재 (약 2주)</span>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-3">
+            <span class="text-slate-400">SUT:</span> <span class="text-white font-bold">Amazon Bedrock Guardrails</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Repositories -->
+      <section id="repositories" class="space-y-6">
+        <h2 class="text-2xl font-black text-white border-b border-slate-800 pb-4">2. 리포지토리 구성</h2>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-slate-700 text-left">
+                <th class="py-3 px-4 text-slate-400 font-semibold">리포지토리</th>
+                <th class="py-3 px-4 text-slate-400 font-semibold">역할</th>
+                <th class="py-3 px-4 text-slate-400 font-semibold">브랜치</th>
+                <th class="py-3 px-4 text-slate-400 font-semibold">커밋</th>
+                <th class="py-3 px-4 text-slate-400 font-semibold">기간</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-slate-800 hover:bg-slate-900/50">
+                <td class="py-3 px-4"><a href="https://github.com/GuardBench/guardbench-backend" class="text-blue-400 hover:underline font-mono">guardbench-backend</a></td>
+                <td class="py-3 px-4 text-slate-200">Spring Boot API + Worker</td>
+                <td class="py-3 px-4"><code class="bg-slate-800 px-2 py-0.5 rounded text-emerald-300">dev</code></td>
+                <td class="py-3 px-4 text-white font-bold">227</td>
+                <td class="py-3 px-4 text-slate-300">08-14 ~ 08-27</td>
+              </tr>
+              <tr class="border-b border-slate-800 hover:bg-slate-900/50">
+                <td class="py-3 px-4"><a href="https://github.com/GuardBench/guardbench-frontend" class="text-blue-400 hover:underline font-mono">guardbench-frontend</a></td>
+                <td class="py-3 px-4 text-slate-200">React SPA</td>
+                <td class="py-3 px-4"><code class="bg-slate-800 px-2 py-0.5 rounded text-emerald-300">main</code></td>
+                <td class="py-3 px-4 text-white font-bold">20</td>
+                <td class="py-3 px-4 text-slate-300">08-25 ~ 08-27</td>
+              </tr>
+              <tr class="border-b border-slate-800 hover:bg-slate-900/50">
+                <td class="py-3 px-4"><a href="https://github.com/GuardBench/guardbench-iac" class="text-blue-400 hover:underline font-mono">guardbench-iac</a></td>
+                <td class="py-3 px-4 text-slate-200">Terraform 인프라</td>
+                <td class="py-3 px-4"><code class="bg-slate-800 px-2 py-0.5 rounded text-emerald-300">dev</code></td>
+                <td class="py-3 px-4 text-white font-bold">16</td>
+                <td class="py-3 px-4 text-slate-300">08-21 ~ 08-27</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="text-sm font-bold text-slate-200 mt-6">코드 규모</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 text-center">
+            <div class="text-2xl font-black text-white">269</div>
+            <div class="text-xs text-slate-400 mt-1">Backend Java</div>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 text-center">
+            <div class="text-2xl font-black text-white">99</div>
+            <div class="text-xs text-slate-400 mt-1">Test Java</div>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 text-center">
+            <div class="text-2xl font-black text-white">21</div>
+            <div class="text-xs text-slate-400 mt-1">Frontend TS/TSX</div>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 text-center">
+            <div class="text-2xl font-black text-white">13</div>
+            <div class="text-xs text-slate-400 mt-1">Terraform .tf</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Backend -->
+      <section id="backend" class="space-y-6">
+        <h2 class="text-2xl font-black text-white border-b border-slate-800 pb-4">3. Backend 현황</h2>
+
+        <h3 class="text-sm font-bold text-slate-200">기술 스택</h3>
+        <div class="flex flex-wrap gap-2 text-xs">
+          <span class="px-3 py-1.5 bg-orange-500/10 text-orange-300 border border-orange-500/30 rounded-full font-semibold">Java 21</span>
+          <span class="px-3 py-1.5 bg-green-500/10 text-green-300 border border-green-500/30 rounded-full font-semibold">Spring Boot 4.1.1</span>
+          <span class="px-3 py-1.5 bg-blue-500/10 text-blue-300 border border-blue-500/30 rounded-full font-semibold">PostgreSQL 16</span>
+          <span class="px-3 py-1.5 bg-purple-500/10 text-purple-300 border border-purple-500/30 rounded-full font-semibold">Amazon SQS</span>
+          <span class="px-3 py-1.5 bg-amber-500/10 text-amber-300 border border-amber-500/30 rounded-full font-semibold">Bedrock Guardrails</span>
+          <span class="px-3 py-1.5 bg-slate-500/10 text-slate-300 border border-slate-500/30 rounded-full font-semibold">Flyway</span>
+          <span class="px-3 py-1.5 bg-red-500/10 text-red-300 border border-red-500/30 rounded-full font-semibold">ArchUnit</span>
+          <span class="px-3 py-1.5 bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 rounded-full font-semibold">Testcontainers</span>
+        </div>
+
+        <h3 class="text-sm font-bold text-slate-200 mt-6">DDD 패키지 구조 (Bounded Context)</h3>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 font-mono text-xs leading-relaxed text-slate-300">
+          <pre class="whitespace-pre">com.guardbench/
+├── <span class="text-slate-400">common/</span>              ← 공통 설정, 에러, 응답 포맷
+├── <span class="text-blue-300">testdefinition/</span>      ← TestSuite & TestCase 관리
+│   ├── domain/ ├── application/ ├── infrastructure/ └── presentation/
+├── <span class="text-emerald-300">testrun/</span>             ← TestRun 수명주기, 비동기 실행
+│   ├── domain/ ├── application/port/out/ ├── infrastructure/ └── presentation/
+├── <span class="text-purple-300">evaluation/</span>          ← Assertion, Change, Quality Gate
+│   ├── domain/ ├── application/ └── infrastructure/
+└── <span class="text-amber-300">guardrail/</span>           ← AWS Bedrock Adapter
+    └── infrastructure/</pre>
+        </div>
+
+        <h3 class="text-sm font-bold text-slate-200 mt-6">구현 완료 기능</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2">
+            <span class="text-blue-400 font-bold">📦 TestSuite/TestCase CRUD</span>
+            <p class="text-slate-300">생성, 조회, 수정, 논리 삭제 + Offset Pagination</p>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2">
+            <span class="text-emerald-400 font-bold">⚡ 비동기 실행 파이프라인</span>
+            <p class="text-slate-300">Outbox → SQS (3 Queue) → Resolution → Execution → Finalization</p>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2">
+            <span class="text-amber-400 font-bold">🤖 Bedrock Adapter</span>
+            <p class="text-slate-300">DRAFT → numbered version materialization + ApplyGuardrail</p>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2">
+            <span class="text-purple-400 font-bold">📊 평가 Core</span>
+            <p class="text-slate-300">Assertion(PASS/FAIL), Change Classification, Quality Gate</p>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2">
+            <span class="text-cyan-400 font-bold">🔍 조회 API</span>
+            <p class="text-slate-300">TestRun 목록/상세/결과 (Multi-sort, 필터링)</p>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2">
+            <span class="text-red-400 font-bold">🧪 통합 테스트</span>
+            <p class="text-slate-300">Testcontainers + LocalStack 기반 MVP 시나리오 검증</p>
+          </div>
+        </div>
+
+        <h3 class="text-sm font-bold text-slate-200 mt-6">API 엔드포인트</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-slate-700 text-left">
+                <th class="py-2 px-3 text-slate-400">Method</th>
+                <th class="py-2 px-3 text-slate-400">Path</th>
+                <th class="py-2 px-3 text-slate-400">설명</th>
+              </tr>
+            </thead>
+            <tbody class="text-slate-300">
+              <tr class="border-b border-slate-800"><td class="py-2 px-3"><code class="text-emerald-300">POST</code></td><td class="py-2 px-3 font-mono">/api/v1/test-suites</td><td class="py-2 px-3">TestSuite + 초기 TestCase 생성</td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3"><code class="text-blue-300">GET</code></td><td class="py-2 px-3 font-mono">/api/v1/test-suites</td><td class="py-2 px-3">목록 조회 (페이지네이션, 필터)</td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3"><code class="text-blue-300">GET</code></td><td class="py-2 px-3 font-mono">/api/v1/test-suites/{id}</td><td class="py-2 px-3">상세 조회</td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3"><code class="text-amber-300">PATCH</code></td><td class="py-2 px-3 font-mono">/api/v1/test-suites/{id}</td><td class="py-2 px-3">수정</td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3"><code class="text-blue-300">GET</code></td><td class="py-2 px-3 font-mono">/api/v1/test-suites/{id}/test-cases</td><td class="py-2 px-3">Suite 내 TestCase 목록</td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3"><code class="text-emerald-300">POST</code></td><td class="py-2 px-3 font-mono">/api/v1/test-suites/{id}/test-cases</td><td class="py-2 px-3">TestCase 추가</td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3"><code class="text-blue-300">GET</code></td><td class="py-2 px-3 font-mono">/api/v1/test-cases/{id}</td><td class="py-2 px-3">TestCase 상세</td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3"><code class="text-amber-300">PATCH</code></td><td class="py-2 px-3 font-mono">/api/v1/test-cases/{id}</td><td class="py-2 px-3">TestCase 수정</td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3"><code class="text-red-300">DELETE</code></td><td class="py-2 px-3 font-mono">/api/v1/test-cases/{id}</td><td class="py-2 px-3">논리 삭제</td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3"><code class="text-emerald-300">POST</code></td><td class="py-2 px-3 font-mono">/api/v1/test-runs</td><td class="py-2 px-3">TestRun 비동기 접수 (202)</td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3"><code class="text-blue-300">GET</code></td><td class="py-2 px-3 font-mono">/api/v1/test-runs</td><td class="py-2 px-3">TestRun 목록</td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3"><code class="text-blue-300">GET</code></td><td class="py-2 px-3 font-mono">/api/v1/test-runs/{id}</td><td class="py-2 px-3">진행률 폴링 (경량)</td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3"><code class="text-blue-300">GET</code></td><td class="py-2 px-3 font-mono">/api/v1/test-runs/{id}/results</td><td class="py-2 px-3">최종 결과 (FINISHED)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="text-sm font-bold text-slate-200 mt-6">TestRun 수명주기</h3>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 font-mono text-xs text-slate-300">
+          <pre class="whitespace-pre">QUEUED → PREPARING → RUNNING → FINISHED
+                                    ├── executionOutcome: COMPLETED | INCOMPLETE | ERROR
+                                    └── qualityGate: PASS | FAIL | NOT_EVALUATED</pre>
+        </div>
+      </section>
+
+      <!-- Section 4: Frontend -->
+      <section id="frontend" class="space-y-6">
+        <h2 class="text-2xl font-black text-white border-b border-slate-800 pb-4">4. Frontend 현황</h2>
+
+        <h3 class="text-sm font-bold text-slate-200">기술 스택</h3>
+        <div class="flex flex-wrap gap-2 text-xs">
+          <span class="px-3 py-1.5 bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 rounded-full font-semibold">React 19</span>
+          <span class="px-3 py-1.5 bg-blue-500/10 text-blue-300 border border-blue-500/30 rounded-full font-semibold">TypeScript 6.0</span>
+          <span class="px-3 py-1.5 bg-purple-500/10 text-purple-300 border border-purple-500/30 rounded-full font-semibold">Vite 8.2</span>
+          <span class="px-3 py-1.5 bg-sky-500/10 text-sky-300 border border-sky-500/30 rounded-full font-semibold">Tailwind CSS 4.3</span>
+          <span class="px-3 py-1.5 bg-green-500/10 text-green-300 border border-green-500/30 rounded-full font-semibold">Playwright</span>
+          <span class="px-3 py-1.5 bg-amber-500/10 text-amber-300 border border-amber-500/30 rounded-full font-semibold">oxlint</span>
+        </div>
+
+        <h3 class="text-sm font-bold text-slate-200 mt-6">구현 완료 기능</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center gap-3">
+            <span class="text-2xl">📊</span>
+            <div><span class="text-white font-bold">Dashboard</span><p class="text-slate-400 mt-0.5">전체 현황 요약 뷰</p></div>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center gap-3">
+            <span class="text-2xl">📋</span>
+            <div><span class="text-white font-bold">Suites</span><p class="text-slate-400 mt-0.5">TestSuite 목록 + 생성 모달</p></div>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center gap-3">
+            <span class="text-2xl">🚀</span>
+            <div><span class="text-white font-bold">Runs</span><p class="text-slate-400 mt-0.5">TestRun 목록 + 실시간 폴링 (2초)</p></div>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center gap-3">
+            <span class="text-2xl">📝</span>
+            <div><span class="text-white font-bold">ResultDetail</span><p class="text-slate-400 mt-0.5">실행 결과 상세 뷰</p></div>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center gap-3">
+            <span class="text-2xl">🔗</span>
+            <div><span class="text-white font-bold">API 연동 완료</span><p class="text-slate-400 mt-0.5">OpenAPI 기반 전체 서비스 레이어</p></div>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center gap-3">
+            <span class="text-2xl">☁️</span>
+            <div><span class="text-white font-bold">자동 배포</span><p class="text-slate-400 mt-0.5">GitHub Actions → S3 → CloudFront</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5: Infrastructure -->
+      <section id="infrastructure" class="space-y-6">
+        <h2 class="text-2xl font-black text-white border-b border-slate-800 pb-4">5. Infrastructure 현황</h2>
+
+        <h3 class="text-sm font-bold text-slate-200">Terraform 리소스 맵</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-slate-700 text-left">
+                <th class="py-2 px-3 text-slate-400">파일</th>
+                <th class="py-2 px-3 text-slate-400">리소스</th>
+                <th class="py-2 px-3 text-slate-400">상태</th>
+              </tr>
+            </thead>
+            <tbody class="text-slate-300">
+              <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">vpc.tf</td><td class="py-2 px-3">VPC 10.1.0.0/16, public/private subnet 각 2개</td><td class="py-2 px-3"><span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 rounded-full text-[10px] font-bold">배포됨</span></td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">security-groups.tf</td><td class="py-2 px-3">ALB, API, RDS, VPC Endpoint SG</td><td class="py-2 px-3"><span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 rounded-full text-[10px] font-bold">배포됨</span></td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">alb.tf</td><td class="py-2 px-3">Internet-facing ALB + Target Group (8080)</td><td class="py-2 px-3"><span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 rounded-full text-[10px] font-bold">배포됨</span></td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">cloudfront-s3.tf</td><td class="py-2 px-3">CloudFront + S3 OAC (SPA), /api/* → ALB</td><td class="py-2 px-3"><span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 rounded-full text-[10px] font-bold">배포됨</span></td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">ecr.tf</td><td class="py-2 px-3">ECR 리포지토리</td><td class="py-2 px-3"><span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 rounded-full text-[10px] font-bold">배포됨</span></td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">ecs.tf</td><td class="py-2 px-3">ECS Cluster + Fargate Task (512/1024)</td><td class="py-2 px-3"><span class="px-2 py-0.5 bg-amber-500/20 text-amber-300 rounded-full text-[10px] font-bold">대기</span></td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">rds.tf</td><td class="py-2 px-3">PostgreSQL 16, db.t4g.micro, gp3 20GB</td><td class="py-2 px-3"><span class="px-2 py-0.5 bg-amber-500/20 text-amber-300 rounded-full text-[10px] font-bold">대기</span></td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">sqs.tf</td><td class="py-2 px-3">3 source queues + 3 DLQ</td><td class="py-2 px-3"><span class="px-2 py-0.5 bg-amber-500/20 text-amber-300 rounded-full text-[10px] font-bold">대기</span></td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">vpc-endpoints.tf</td><td class="py-2 px-3">SQS, Bedrock, ECR, Logs, Secrets Manager</td><td class="py-2 px-3"><span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 rounded-full text-[10px] font-bold">배포됨</span></td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">observability.tf</td><td class="py-2 px-3">CloudWatch alarms, SNS</td><td class="py-2 px-3"><span class="px-2 py-0.5 bg-amber-500/20 text-amber-300 rounded-full text-[10px] font-bold">대기</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="text-sm font-bold text-slate-200 mt-6">배포 아키텍처</h3>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 font-mono text-xs text-slate-300 overflow-x-auto">
+          <pre class="whitespace-pre">Browser (HTTPS)
+    │
+    ▼
+CloudFront Distribution
+    ├── /* → S3 (정적 SPA, OAC)
+    └── /api/* → HTTP :80
+                    ▼
+               Public ALB
+                    │ HTTP :8080
+                    ▼
+               ECS Fargate Service (guardbench-dev-app)
+               ├── Spring MVC HTTP API
+               ├── Outbox Publisher
+               ├── gb-run-resolve consumer
+               ├── gb-workitems consumer
+               ├── gb-run-finalize consumer
+               └── Bedrock adapter
+                    │
+                    ├── PostgreSQL :5432 → Private RDS
+                    └── HTTPS :443 → VPC Endpoints
+                         ├── SQS
+                         ├── Bedrock / Bedrock Runtime
+                         ├── ECR / S3 Gateway
+                         ├── CloudWatch Logs
+                         └── Secrets Manager</pre>
+        </div>
+      </section>
+
+      <!-- Section 6: Architecture -->
+      <section id="architecture" class="space-y-6">
+        <h2 class="text-2xl font-black text-white border-b border-slate-800 pb-4">6. 아키텍처 요약</h2>
+
+        <h3 class="text-sm font-bold text-slate-200">설계 원칙</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+            <span class="text-blue-400 font-bold block mb-1">DDD Hexagonal Architecture</span>
+            <span class="text-slate-300">Domain은 Spring, JPA, AWS SDK에 의존하지 않음</span>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+            <span class="text-emerald-400 font-bold block mb-1">Bounded Context 독립성</span>
+            <span class="text-slate-300">testdefinition, testrun, evaluation 독립 경계</span>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+            <span class="text-purple-400 font-bold block mb-1">Consumer-Owned Port</span>
+            <span class="text-slate-300">Context 간 통신은 소비자 소유 Port + Integration Adapter</span>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+            <span class="text-amber-400 font-bold block mb-1">Outbox Pattern</span>
+            <span class="text-slate-300">트랜잭션 안정성을 보장하는 SQS 메시지 발행</span>
+          </div>
+        </div>
+
+        <h3 class="text-sm font-bold text-slate-200 mt-6">Quality Gate 기준</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-slate-700 text-left">
+                <th class="py-2 px-3 text-slate-400">지표</th>
+                <th class="py-2 px-3 text-slate-400">기준</th>
+                <th class="py-2 px-3 text-slate-400">의미</th>
+              </tr>
+            </thead>
+            <tbody class="text-slate-300">
+              <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">candidateAssertionPassRate</td><td class="py-2 px-3 text-emerald-300 font-bold">>= 0.95</td><td class="py-2 px-3">기대 동작 충족률</td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">securityRegressionCount</td><td class="py-2 px-3 text-red-300 font-bold">== 0</td><td class="py-2 px-3">보안 회귀 건수 (Zero Tolerance)</td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">usabilityRegressionRate</td><td class="py-2 px-3 text-amber-300 font-bold"><= 0.05</td><td class="py-2 px-3">과잉 차단 비율</td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3 font-mono">testExecutionSuccessRate</td><td class="py-2 px-3 text-blue-300 font-bold">>= 0.95</td><td class="py-2 px-3">실행 신뢰도</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-xs text-slate-400">모든 조건 충족 시 <span class="text-emerald-300 font-bold">PASS</span>, 하나라도 미충족 시 <span class="text-red-300 font-bold">FAIL</span></p>
+
+        <h3 class="text-sm font-bold text-slate-200 mt-6">Change Classification</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-slate-700 text-left">
+                <th class="py-2 px-3 text-slate-400">Expected</th>
+                <th class="py-2 px-3 text-slate-400">Baseline</th>
+                <th class="py-2 px-3 text-slate-400">Candidate</th>
+                <th class="py-2 px-3 text-slate-400">Assertion</th>
+                <th class="py-2 px-3 text-slate-400">ChangeType</th>
+              </tr>
+            </thead>
+            <tbody class="text-slate-300">
+              <tr class="border-b border-slate-800"><td class="py-2 px-3">ALLOW</td><td class="py-2 px-3">ALLOW</td><td class="py-2 px-3 text-red-300">BLOCK</td><td class="py-2 px-3 text-red-300">FAIL</td><td class="py-2 px-3 text-amber-300 font-semibold">USABILITY_REGRESSION</td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3">BLOCK</td><td class="py-2 px-3">BLOCK</td><td class="py-2 px-3 text-red-300">ALLOW</td><td class="py-2 px-3 text-red-300">FAIL</td><td class="py-2 px-3 text-red-300 font-semibold">SECURITY_REGRESSION</td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3">ALLOW</td><td class="py-2 px-3">BLOCK</td><td class="py-2 px-3 text-emerald-300">ALLOW</td><td class="py-2 px-3 text-emerald-300">PASS</td><td class="py-2 px-3 text-emerald-300 font-semibold">IMPROVEMENT</td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3">BLOCK</td><td class="py-2 px-3">ALLOW</td><td class="py-2 px-3 text-emerald-300">BLOCK</td><td class="py-2 px-3 text-emerald-300">PASS</td><td class="py-2 px-3 text-emerald-300 font-semibold">IMPROVEMENT</td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3">ALLOW</td><td class="py-2 px-3">ALLOW</td><td class="py-2 px-3">ALLOW</td><td class="py-2 px-3 text-emerald-300">PASS</td><td class="py-2 px-3 text-slate-400">NO_CHANGE</td></tr>
+              <tr class="border-b border-slate-800"><td class="py-2 px-3">BLOCK</td><td class="py-2 px-3">BLOCK</td><td class="py-2 px-3">BLOCK</td><td class="py-2 px-3 text-emerald-300">PASS</td><td class="py-2 px-3 text-slate-400">NO_CHANGE</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 7: Timeline -->
+      <section id="timeline" class="space-y-6">
+        <h2 class="text-2xl font-black text-white border-b border-slate-800 pb-4">7. 개발 진행 타임라인</h2>
+
+        <div class="space-y-6">
+          <!-- Week 1 -->
+          <div class="relative pl-8 border-l-2 border-blue-500/30">
+            <div class="absolute -left-2.5 top-1 w-5 h-5 bg-blue-600 rounded-full border-4 border-slate-950"></div>
+            <div class="space-y-3">
+              <div class="flex items-center gap-3">
+                <h4 class="text-sm font-bold text-white">Week 1</h4>
+                <span class="text-xs text-slate-400 font-mono">08-14 ~ 08-20</span>
+              </div>
+              <ul class="text-xs text-slate-300 space-y-1.5 list-disc list-inside">
+                <li>프로젝트 초기화 (Spring Boot, Gradle)</li>
+                <li>구현 계약 문서 정리 (도메인 모델, API, 평가 계약)</li>
+                <li>ADR 작성 (도메인 경계, 영속성, 비동기 실행, Finalization 원자성)</li>
+                <li>ArchUnit 아키텍처 테스트 도입</li>
+                <li>TestDefinition 도메인 구현 + Persistence Adapter</li>
+                <li>TestRun 도메인 구현</li>
+                <li>Bedrock Adapter 설계 문서 확정</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Week 2 -->
+          <div class="relative pl-8 border-l-2 border-emerald-500/30">
+            <div class="absolute -left-2.5 top-1 w-5 h-5 bg-emerald-600 rounded-full border-4 border-slate-950"></div>
+            <div class="space-y-3">
+              <div class="flex items-center gap-3">
+                <h4 class="text-sm font-bold text-white">Week 2</h4>
+                <span class="text-xs text-slate-400 font-mono">08-21 ~ 08-27</span>
+              </div>
+              <ul class="text-xs text-slate-300 space-y-1.5 list-disc list-inside">
+                <li>Evaluation Core 구현 (Assertion, Change, Quality Gate)</li>
+                <li>Bedrock SDK Adapter 구현 + 결과 정규화</li>
+                <li>TestSuite/TestCase/TestRun API 전체 구현</li>
+                <li><strong class="text-white">비동기 Worker 파이프라인 전체 완성</strong> (Outbox → Resolution → Execution → Finalization)</li>
+                <li>MVP 통합 테스트 + CI merge gate</li>
+                <li>IaC: VPC → ALB → CloudFront → ECR → ECS → RDS → SQS 전체 스택</li>
+                <li>Frontend: React SPA + API 연동 + 실시간 폴링</li>
+                <li>인프라 배포 계약 확정</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Current -->
+          <div class="relative pl-8">
+            <div class="absolute -left-2.5 top-1 w-5 h-5 bg-amber-500 rounded-full border-4 border-slate-950 animate-pulse"></div>
+            <div class="space-y-3">
+              <div class="flex items-center gap-3">
+                <h4 class="text-sm font-bold text-white">현재 (08-28)</h4>
+                <span class="px-2 py-0.5 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-full text-[10px] font-bold">IN PROGRESS</span>
+              </div>
+              <ul class="text-xs text-slate-300 space-y-1.5 list-disc list-inside">
+                <li><strong class="text-emerald-300">Backend:</strong> MVP 기능 구현 완료, 통합 테스트 통과</li>
+                <li><strong class="text-cyan-300">Frontend:</strong> API 연동 완료, 주요 뷰 구축 완료</li>
+                <li><strong class="text-purple-300">IaC:</strong> Terraform 정의 완료, 백엔드 최초 배포 대기</li>
+                <li><strong class="text-amber-300">Next:</strong> ECS + RDS + SQS 실 배포 → 프론트-백 통합 검증</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800 bg-slate-950 py-6 text-center text-xs text-slate-500 space-y-1">
+    <p>&copy; 2026 GuardBench Team (KOSA AWS 3팀)</p>
+    <p class="text-slate-600">Built with Amazon Bedrock Guardrails, SQS, ECS Fargate & PostgreSQL</p>
+  </footer>
+
+</body>
+</html>
