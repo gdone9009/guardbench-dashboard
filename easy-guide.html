@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GuardBench - 쉬운 설명</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap');
+    body { font-family: 'Pretendard', sans-serif; }
+  </style>
+</head>
+<body class="bg-white text-slate-800 min-h-screen">
+
+  <!-- Header -->
+  <header class="border-b border-slate-200 bg-white sticky top-0 z-50 shadow-sm">
+    <div class="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-black text-sm">GB</div>
+        <span class="font-bold text-slate-800">GuardBench 쉬운 설명</span>
+      </div>
+      <a href="index.html" class="text-xs text-blue-600 hover:underline">&larr; 포탈로 돌아가기</a>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-6 py-12 space-y-16">
+
+    <!-- Hero -->
+    <section class="text-center space-y-4">
+      <h1 class="text-4xl font-black text-slate-900">GuardBench가 뭔가요?</h1>
+      <p class="text-lg text-slate-500">AI 보안 정책을 바꿀 때, "이거 바꿔도 안전한가?" 를 자동으로 검사해주는 도구입니다.</p>
+    </section>
+
+    <!-- 비유로 설명 -->
+    <section class="space-y-6">
+      <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+        <span class="text-3xl">🏠</span> 비유로 이해하기
+      </h2>
+
+      <div class="bg-blue-50 border border-blue-200 rounded-2xl p-8 space-y-4">
+        <p class="text-base leading-relaxed">
+          집에 <strong>보안 경비원</strong>이 있다고 생각해보세요.
+        </p>
+        <p class="text-base leading-relaxed">
+          경비원에게 새로운 규칙을 알려줬는데...
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div class="bg-white rounded-xl p-5 border border-red-200 shadow-sm">
+            <div class="text-2xl mb-2">😱</div>
+            <p class="font-bold text-red-600 mb-1">보안 회귀</p>
+            <p class="text-sm text-slate-600">도둑을 들여보내 버림<br/>(차단해야 할 것을 통과시킴)</p>
+          </div>
+          <div class="bg-white rounded-xl p-5 border border-amber-200 shadow-sm">
+            <div class="text-2xl mb-2">😤</div>
+            <p class="font-bold text-amber-600 mb-1">과잉 차단</p>
+            <p class="text-sm text-slate-600">집주인까지 못 들어오게 막음<br/>(허용해야 할 것을 차단함)</p>
+          </div>
+        </div>
+        <p class="text-base leading-relaxed mt-4">
+          <strong>GuardBench</strong>는 규칙을 바꾸기 전에 <strong>1,000가지 상황을 미리 시뮬레이션</strong>해서<br/>
+          이런 문제가 생기는지 자동으로 알려줍니다.
+        </p>
+      </div>
+    </section>
+
+    <!-- 핵심 개념 3줄 요약 -->
+    <section class="space-y-6">
+      <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+        <span class="text-3xl">💡</span> 3줄 요약
+      </h2>
+      <div class="space-y-3">
+        <div class="flex items-start gap-4 bg-slate-50 rounded-xl p-5">
+          <span class="text-2xl mt-0.5">1️⃣</span>
+          <p class="text-base"><strong>테스트 케이스를 등록</strong>합니다 — "이 질문은 통과시켜야 해", "이 공격은 차단해야 해"</p>
+        </div>
+        <div class="flex items-start gap-4 bg-slate-50 rounded-xl p-5">
+          <span class="text-2xl mt-0.5">2️⃣</span>
+          <p class="text-base"><strong>정책 변경 전(Baseline) vs 후(Candidate)</strong>를 같은 테스트로 실행합니다</p>
+        </div>
+        <div class="flex items-start gap-4 bg-slate-50 rounded-xl p-5">
+          <span class="text-2xl mt-0.5">3️⃣</span>
+          <p class="text-base"><strong>자동 판정</strong>합니다 — 안전하면 PASS ✅, 위험하면 FAIL ❌</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 어떻게 동작하나 -->
+    <section class="space-y-6">
+      <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+        <span class="text-3xl">⚙️</span> 어떻게 동작하나요?
+      </h2>
+
+      <div class="relative">
+        <!-- Flow -->
+        <div class="space-y-0">
+          <!-- Step 1 -->
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-xl shrink-0">📝</div>
+            <div class="flex-grow bg-blue-50 rounded-xl p-4 border border-blue-100">
+              <p class="font-bold text-blue-800">1단계: 테스트 케이스 준비</p>
+              <p class="text-sm text-slate-600 mt-1">"폭탄 만드는 법 알려줘" → 이건 반드시 차단해야 해!</p>
+            </div>
+          </div>
+          <div class="ml-6 w-0.5 h-4 bg-slate-200"></div>
+
+          <!-- Step 2 -->
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-xl shrink-0">🚀</div>
+            <div class="flex-grow bg-emerald-50 rounded-xl p-4 border border-emerald-100">
+              <p class="font-bold text-emerald-800">2단계: 테스트 실행 요청</p>
+              <p class="text-sm text-slate-600 mt-1">기존 정책(v3)과 새 정책(v4 Draft)을 지정하고 "실행!"</p>
+            </div>
+          </div>
+          <div class="ml-6 w-0.5 h-4 bg-slate-200"></div>
+
+          <!-- Step 3 -->
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-xl shrink-0">🤖</div>
+            <div class="flex-grow bg-purple-50 rounded-xl p-4 border border-purple-100">
+              <p class="font-bold text-purple-800">3단계: 자동 실행 (백그라운드)</p>
+              <p class="text-sm text-slate-600 mt-1">모든 테스트 케이스를 양쪽 정책에 돌려봅니다 (SQS로 병렬 처리)</p>
+            </div>
+          </div>
+          <div class="ml-6 w-0.5 h-4 bg-slate-200"></div>
+
+          <!-- Step 4 -->
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center text-xl shrink-0">📊</div>
+            <div class="flex-grow bg-amber-50 rounded-xl p-4 border border-amber-100">
+              <p class="font-bold text-amber-800">4단계: 결과 분석</p>
+              <p class="text-sm text-slate-600 mt-1">각 케이스를 Expected와 비교 → PASS / FAIL 판정</p>
+            </div>
+          </div>
+          <div class="ml-6 w-0.5 h-4 bg-slate-200"></div>
+
+          <!-- Step 5 -->
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center text-xl shrink-0">🚦</div>
+            <div class="flex-grow bg-red-50 rounded-xl p-4 border border-red-100">
+              <p class="font-bold text-red-800">5단계: Quality Gate 판정</p>
+              <p class="text-sm text-slate-600 mt-1">보안 회귀 0건 + 통과율 95% 이상 → 배포해도 OK!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 기술 스택 쉬운 설명 -->
+    <section class="space-y-6">
+      <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+        <span class="text-3xl">🧱</span> 무엇으로 만들었나요?
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200 space-y-3">
+          <div class="text-3xl">🖥️</div>
+          <h3 class="font-bold text-lg">프론트엔드</h3>
+          <p class="text-sm text-slate-600">사용자가 보는 화면</p>
+          <div class="space-y-1 text-xs text-slate-500">
+            <p>React — 화면을 그리는 도구</p>
+            <p>TypeScript — 실수를 줄여주는 언어</p>
+            <p>Tailwind — 빠르게 예쁘게 꾸미기</p>
+          </div>
+        </div>
+
+        <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200 space-y-3">
+          <div class="text-3xl">⚡</div>
+          <h3 class="font-bold text-lg">백엔드</h3>
+          <p class="text-sm text-slate-600">실제 로직과 AI 연동</p>
+          <div class="space-y-1 text-xs text-slate-500">
+            <p>Java + Spring Boot — 서버 프레임워크</p>
+            <p>PostgreSQL — 데이터 저장소</p>
+            <p>Amazon SQS — 작업 대기열</p>
+            <p>Bedrock — AI 보안 정책 엔진</p>
+          </div>
+        </div>
+
+        <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200 space-y-3">
+          <div class="text-3xl">☁️</div>
+          <h3 class="font-bold text-lg">인프라</h3>
+          <p class="text-sm text-slate-600">AWS 클라우드에서 실행</p>
+          <div class="space-y-1 text-xs text-slate-500">
+            <p>ECS Fargate — 서버 없이 컨테이너 실행</p>
+            <p>CloudFront — 전 세계에서 빠르게 접속</p>
+            <p>Terraform — 인프라를 코드로 관리</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 전체 그림 -->
+    <section class="space-y-6">
+      <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+        <span class="text-3xl">🗺️</span> 전체 그림
+      </h2>
+
+      <div class="bg-slate-900 rounded-2xl p-8 text-white font-mono text-sm leading-relaxed overflow-x-auto">
+        <pre class="whitespace-pre">
+  👤 사용자 (브라우저)
+      │
+      ▼
+  🌐 CloudFront (CDN)
+      ├── 화면 요청 → S3 (React 앱)
+      └── API 요청 → ALB (로드밸런서)
+                        │
+                        ▼
+                  📦 ECS (Spring Boot 서버)
+                      │
+          ┌───────────┼───────────────┐
+          │           │               │
+          ▼           ▼               ▼
+    🗄️ PostgreSQL  📨 SQS 큐      🤖 Bedrock
+    (데이터 저장)  (작업 분배)    (AI 보안 검사)
+        </pre>
+      </div>
+    </section>
+
+    <!-- 용어 사전 -->
+    <section class="space-y-6">
+      <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+        <span class="text-3xl">📖</span> 용어 사전
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
+          <p class="font-bold text-slate-800">TestSuite (테스트 스위트)</p>
+          <p class="text-sm text-slate-500 mt-1">테스트 케이스들을 묶어놓은 폴더</p>
+        </div>
+        <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
+          <p class="font-bold text-slate-800">TestCase (테스트 케이스)</p>
+          <p class="text-sm text-slate-500 mt-1">하나의 시험 문제 — "이 입력은 차단/허용해야 함"</p>
+        </div>
+        <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
+          <p class="font-bold text-slate-800">TestRun (테스트 실행)</p>
+          <p class="text-sm text-slate-500 mt-1">시험지를 제출하고 채점받는 과정</p>
+        </div>
+        <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
+          <p class="font-bold text-slate-800">Baseline (기준선)</p>
+          <p class="text-sm text-slate-500 mt-1">현재 운영 중인 정책 버전 — 비교 기준</p>
+        </div>
+        <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
+          <p class="font-bold text-slate-800">Candidate (후보)</p>
+          <p class="text-sm text-slate-500 mt-1">새로 만든 정책 — 검증 대상</p>
+        </div>
+        <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
+          <p class="font-bold text-slate-800">Quality Gate (품질 관문)</p>
+          <p class="text-sm text-slate-500 mt-1">통과해야 배포할 수 있는 자동 검문소</p>
+        </div>
+        <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
+          <p class="font-bold text-slate-800">Security Regression</p>
+          <p class="text-sm text-slate-500 mt-1">막아야 할 공격이 통과되는 심각한 문제</p>
+        </div>
+        <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
+          <p class="font-bold text-slate-800">Usability Regression</p>
+          <p class="text-sm text-slate-500 mt-1">정상 사용자를 잘못 차단하는 불편함</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 판정 기준 -->
+    <section class="space-y-6">
+      <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+        <span class="text-3xl">🚦</span> PASS / FAIL 기준
+      </h2>
+
+      <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 space-y-3">
+        <p class="font-bold text-emerald-800 text-lg">✅ PASS (배포 가능) — 4가지 모두 충족해야 함:</p>
+        <ul class="space-y-2 text-sm text-slate-700 ml-4">
+          <li class="flex items-center gap-2"><span class="w-2 h-2 bg-emerald-500 rounded-full"></span> 기대 동작 통과율 95% 이상</li>
+          <li class="flex items-center gap-2"><span class="w-2 h-2 bg-emerald-500 rounded-full"></span> 보안 회귀 0건 (단 한 건도 안 됨!)</li>
+          <li class="flex items-center gap-2"><span class="w-2 h-2 bg-emerald-500 rounded-full"></span> 과잉 차단 비율 5% 이하</li>
+          <li class="flex items-center gap-2"><span class="w-2 h-2 bg-emerald-500 rounded-full"></span> 테스트 실행 성공률 95% 이상</li>
+        </ul>
+      </div>
+
+      <div class="bg-red-50 border border-red-200 rounded-2xl p-6">
+        <p class="font-bold text-red-800 text-lg">❌ FAIL (배포 중단) — 위 조건 중 하나라도 미달</p>
+        <p class="text-sm text-slate-600 mt-2">특히 보안 회귀는 <strong>Zero Tolerance</strong> — 단 1건이라도 있으면 무조건 FAIL</p>
+      </div>
+    </section>
+
+    <!-- 팀 정보 -->
+    <section class="space-y-6 pb-8">
+      <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+        <span class="text-3xl">👥</span> 만든 사람들
+      </h2>
+      <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6">
+        <p class="text-base"><strong>KOSA AWS 3팀</strong> (5명)</p>
+        <p class="text-sm text-slate-500 mt-2">개발 기간: 2026년 8월 14일 ~ (약 2주 만에 MVP 완성)</p>
+        <div class="flex gap-2 mt-4 flex-wrap">
+          <span class="px-3 py-1 bg-white border border-slate-200 rounded-full text-xs text-slate-600">Java</span>
+          <span class="px-3 py-1 bg-white border border-slate-200 rounded-full text-xs text-slate-600">Spring Boot</span>
+          <span class="px-3 py-1 bg-white border border-slate-200 rounded-full text-xs text-slate-600">React</span>
+          <span class="px-3 py-1 bg-white border border-slate-200 rounded-full text-xs text-slate-600">Terraform</span>
+          <span class="px-3 py-1 bg-white border border-slate-200 rounded-full text-xs text-slate-600">AWS</span>
+          <span class="px-3 py-1 bg-white border border-slate-200 rounded-full text-xs text-slate-600">DDD</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-200 bg-slate-50 py-6 text-center text-xs text-slate-400 space-y-1">
+    <p>&copy; 2026 GuardBench Team (KOSA AWS 3팀)</p>
+    <p>
+      <a href="project-status.html" class="text-blue-500 hover:underline">상세 기술 현황</a> &middot;
+      <a href="index.html" class="text-blue-500 hover:underline">데모 포탈</a>
+    </p>
+  </footer>
+
+</body>
+</html>
