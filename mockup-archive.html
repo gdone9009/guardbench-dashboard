@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GuardBench - 과거 목업 대시보드 아카이브 (v1 ~ v5)</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    body { font-family: 'Pretendard', sans-serif; }
+    code, pre, .font-mono { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white">
+
+  <!-- Header Section -->
+  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+        <div class="w-12 h-12 bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center font-black text-2xl text-white shadow-lg shadow-blue-500/25 ring-1 ring-white/20">
+          GB
+        </div>
+        <div>
+          <h1 class="text-xl font-black tracking-tight text-white flex items-center gap-2">
+            GuardBench 목업 아카이브
+            <span class="px-2.5 py-0.5 text-xs bg-slate-500/20 text-slate-300 border border-slate-500/30 rounded-full font-mono font-bold">Archived v1 ~ v5</span>
+          </h1>
+          <p class="text-xs text-slate-400">초기 시연·기획 검증용 목업 대시보드 보존 페이지 (현재 프로젝트와 분리됨)</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <a href="index.html" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition shadow-md flex items-center gap-2">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i> 메인으로 돌아가기
+        </a>
+        <a href="https://github.com/gdone9009" target="_blank" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 text-xs font-bold rounded-xl transition flex items-center gap-2">
+          <i data-lucide="github" class="w-4 h-4"></i> Personal GitHub
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Archive Notice Banner -->
+  <div class="bg-amber-500/10 border-b border-amber-500/30">
+    <div class="max-w-5xl mx-auto px-4 py-3 text-center text-xs text-amber-300 flex items-center justify-center gap-2">
+      <i data-lucide="archive" class="w-4 h-4"></i>
+      이 페이지는 <strong>초기 목업 대시보드</strong>를 보존한 아카이브입니다. 현재 실제 프로젝트와는 연결되어 있지 않습니다.
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="py-12 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 border-b border-slate-800/80">
+    <div class="max-w-5xl mx-auto px-4 text-center space-y-4">
+      <div class="inline-flex items-center gap-2 px-3 py-1 bg-slate-500/10 border border-slate-500/30 rounded-full text-slate-400 text-xs font-semibold">
+        <i data-lucide="history" class="w-3.5 h-3.5"></i> GuardBench Dashboard Evolution (v1 ~ v5) · 보존판
+      </div>
+      <h2 class="text-3xl sm:text-4xl font-black text-white tracking-tight leading-tight">
+        초기 목업 대시보드 진화 과정
+      </h2>
+      <p class="text-sm text-slate-400 max-w-2xl mx-auto leading-relaxed">
+        기술 검증용 3-Depth 목업(v1)부터 사용자 친화적 UI(v2), 1,000건 대용량(v3), OWASP 실제 공격 사례(v4), 배포 정책 실시간 조절기(v5)까지 초기 기획·시연 과정을 기록으로 남긴 페이지입니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- Versions Portal Grid -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- Version 5 Card (Featured) -->
+      <div class="lg:col-span-3 bg-gradient-to-r from-slate-900 via-blue-950/40 to-slate-900 border-2 border-blue-500/50 rounded-3xl p-8 shadow-2xl relative overflow-hidden group space-y-6">
+        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+          <div class="space-y-1">
+            <div class="flex items-center gap-3">
+              <span class="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono font-bold text-xs rounded-full">v5.0 Ultimate Edition</span>
+              <h3 class="text-2xl font-black text-white">GuardBench Version 5 (최종 고도화 에디션)</h3>
+            </div>
+            <p class="text-xs text-slate-400">Quality Gate 배포 정책 실시간 Configurator + Code Diff + Executive Audit Report</p>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <a href="guardbench-dashboard-v5/index.html" class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-blue-600/30 transition flex items-center gap-2 whitespace-nowrap">
+              v5 목업 대시보드 실행하기 <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
+          <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-1">
+            <span class="text-blue-400 font-bold block">⚙️ Policy Configurator</span>
+            <span class="text-slate-300">허용 결함 슬라이더 조절 시 배포 판정 실시간 재계산</span>
+          </div>
+          <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-1">
+            <span class="text-purple-400 font-bold block">🔍 JSON Trace Code Diff</span>
+            <span class="text-slate-300">Bedrock Raw Trace 줄 단위 Red/Green Diff 시각화</span>
+          </div>
+          <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-1">
+            <span class="text-amber-400 font-bold block">📄 Executive Audit Report</span>
+            <span class="text-slate-300">C-Level/감사팀 제출용 인쇄 및 PDF 저장 모달</span>
+          </div>
+          <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-1">
+            <span class="text-emerald-400 font-bold block">➕ Custom Case Add</span>
+            <span class="text-slate-300">사용자 신규 프롬프트 즉시 추가 및 재검증</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Version 1 Card -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-lg flex flex-col justify-between space-y-6 hover:border-slate-700 transition">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-0.5 bg-slate-800 text-slate-300 border border-slate-700 font-mono font-bold text-xs rounded-full">v1.0</span>
+            <span class="text-xs text-slate-500 font-mono">Port 8081</span>
+          </div>
+          <h4 class="text-lg font-bold text-white">GuardBench Version 1</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            엔지니어링 중심의 3-Depth (Dashboard → Run Detail → Inspector) 구조 목업입니다. 2축 분리 평가 도메인 원칙을 기술적으로 검증합니다.
+          </p>
+        </div>
+
+        <a href="guardbench-dashboard-v1/index.html" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl transition text-center border border-slate-700 flex items-center justify-center gap-1.5">
+          v1 실행하기 →
+        </a>
+      </div>
+
+      <!-- Version 2 Card -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-lg flex flex-col justify-between space-y-6 hover:border-slate-700 transition">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-0.5 bg-blue-500/20 text-blue-300 border border-blue-500/30 font-mono font-bold text-xs rounded-full">v2.0</span>
+            <span class="text-xs text-slate-500 font-mono">Port 8082</span>
+          </div>
+          <h4 class="text-lg font-bold text-white">GuardBench Version 2</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            기획자/보안담당자 친화적 Modern Light UI입니다. 품질 신호등 경고 배너, 🧪 대화형 실시간 가드레일 샌드박스, 💡 용어집을 제공합니다.
+          </p>
+        </div>
+
+        <a href="guardbench-dashboard-v2/index.html" class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition text-center shadow-md shadow-blue-600/20 flex items-center justify-center gap-1.5">
+          v2 실행하기 →
+        </a>
+      </div>
+
+      <!-- Version 3 Card -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-lg flex flex-col justify-between space-y-6 hover:border-slate-700 transition">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-0.5 bg-purple-500/20 text-purple-300 border border-purple-500/30 font-mono font-bold text-xs rounded-full">v3.0</span>
+            <span class="text-xs text-slate-500 font-mono">Port 8083</span>
+          </div>
+          <h4 class="text-lg font-bold text-white">GuardBench Version 3</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            8개 부서 1,000건 대용량 엔터프라이즈 에디션입니다. 20/50/100개 단위 고성능 페이지네이션 및 CSV/JSON Export를 지원합니다.
+          </p>
+        </div>
+
+        <a href="guardbench-dashboard-v3/index.html" class="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-xl transition text-center shadow-md shadow-purple-600/20 flex items-center justify-center gap-1.5">
+          v3 실행하기 →
+        </a>
+      </div>
+
+      <!-- Version 4 Card -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-lg flex flex-col justify-between space-y-6 hover:border-slate-700 transition">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-0.5 bg-red-500/20 text-red-300 border border-red-500/30 font-mono font-bold text-xs rounded-full">v4.0</span>
+            <span class="text-xs text-slate-500 font-mono">Port 8084</span>
+          </div>
+          <h4 class="text-lg font-bold text-white">GuardBench Version 4</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            OWASP Top 10 for LLM 및 실제 공격 사례 기반 1,000개 고유 테스트 프롬프트 세트입니다. DAN, Crescendo, Base64 바이패스를 검증합니다.
+          </p>
+        </div>
+
+        <a href="guardbench-dashboard-v4/index.html" class="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-xl transition text-center shadow-md shadow-red-600/20 flex items-center justify-center gap-1.5">
+          v4 실행하기 →
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800 bg-slate-950 py-8 text-center text-xs text-slate-500 space-y-2">
+    <p>© 2026 GuardBench Team (KOSA AWS 3팀). All rights reserved.</p>
+    <p class="text-slate-600">Built with Amazon Bedrock Guardrails, SQS, ECS Fargate & PostgreSQL</p>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
