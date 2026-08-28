@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GuardBench vs Guardrail — 역할 정립</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap');
+    body { font-family: 'Pretendard', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen antialiased">
+
+  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">
+      <h1 class="font-bold text-white">GuardBench와 Guardrail은 다릅니다</h1>
+      <a href="index.html" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl">← 챗봇 데모</a>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-6 py-12 space-y-12">
+
+    <section class="space-y-4">
+      <span class="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 border border-blue-500/30 rounded-full text-blue-400 text-xs font-semibold"><i data-lucide="help-circle" class="w-3.5 h-3.5"></i> 자주 하는 오해 바로잡기</span>
+      <h2 class="text-3xl font-black text-white">"챗봇을 GuardBench로 필터링한다"는 오해입니다</h2>
+      <p class="text-slate-400 text-sm leading-relaxed">챗봇 입력을 실시간으로 걸러내는 건 <strong class="text-white">Guardrail</strong>이고, 그 Guardrail 정책을 배포 전에 시험하는 게 <strong class="text-white">GuardBench</strong>입니다. 둘은 작동 시점도, 역할도 다릅니다.</p>
+    </section>
+
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="bg-slate-900 border border-blue-500/30 rounded-2xl p-6 space-y-3">
+        <div class="text-3xl">🛡️</div>
+        <h3 class="text-lg font-bold text-white">Guardrail (Amazon Bedrock)</h3>
+        <p class="text-xs text-blue-300 font-semibold">런타임 필터 · 평상시 상시 작동</p>
+        <ul class="text-sm text-slate-300 space-y-2 list-disc list-inside">
+          <li>사용자 입력/출력을 <b>실시간</b>으로 ALLOW/BLOCK 판정</li>
+          <li>매 요청마다 작동 (챗봇 데모의 "1차 필터"가 이것)</li>
+          <li><b>ApplyGuardrail</b> API — 모델 호출과 분리된 독립 평가</li>
+          <li>비유: 문 앞에 상주하는 경비원</li>
+        </ul>
+      </div>
+      <div class="bg-slate-900 border border-emerald-500/30 rounded-2xl p-6 space-y-3">
+        <div class="text-3xl">🧪</div>
+        <h3 class="text-lg font-bold text-white">GuardBench (우리 프로젝트)</h3>
+        <p class="text-xs text-emerald-300 font-semibold">테스트 도구 · 버전업 시에만 작동</p>
+        <ul class="text-sm text-slate-300 space-y-2 list-disc list-inside">
+          <li>Guardrail 정책을 <b>바꿀 때</b> 배포 전 검증</li>
+          <li>현재 정책(v7) vs 변경 예정 정책(v8)을 같은 테스트로 비교</li>
+          <li>보안 회귀·과잉 차단을 찾아 <b>배포 판정</b> (Quality Gate)</li>
+          <li>비유: 경비원 채용 시험 (실전 투입 전 시험)</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="space-y-4">
+      <h3 class="text-xl font-bold text-white">Q&A로 정리</h3>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-2">
+        <p class="text-sm font-bold text-blue-300">Q. GuardBench가 챗봇 입력을 1차 필터링하나요?</p>
+        <p class="text-sm text-slate-300">아니요. 실시간 필터링은 <b>Guardrail</b>의 역할입니다. GuardBench는 그 Guardrail 정책이 안전한지 배포 전에 시험할 뿐, 런타임 트래픽에는 개입하지 않습니다.</p>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-2">
+        <p class="text-sm font-bold text-blue-300">Q. 그럼 이건 시스템 프롬프트/컨텍스트인가요?</p>
+        <p class="text-sm text-slate-300">아니요. 시스템 프롬프트는 LLM의 답변 <b>방식</b>을 지시하는 문장입니다. Guardrail은 그와 별개 계층에서 입력/출력이 <b>정책을 위반했는지만</b> 판정합니다. ApplyGuardrail은 모델 응답을 요청하지 않고 텍스트만 받아 ALLOW/BLOCK을 돌려줍니다.</p>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-2">
+        <p class="text-sm font-bold text-blue-300">Q. 가드레일 정책 변경을 미리 테스트하는 역할이 맞나요?</p>
+        <p class="text-sm text-slate-300"><b>맞습니다.</b> 팀 계약(ADR 0007, MVP 범위)에 따르면 GuardBench의 정확한 역할입니다.</p>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-2">
+        <p class="text-sm font-bold text-blue-300">Q. 평상시엔 작동 안 하고 버전업할 때만 쓰나요?</p>
+        <p class="text-sm text-slate-300"><b>맞습니다.</b> GuardBench는 CI 게이트처럼 정책을 버전업할 때만 돌립니다. 평상시 실시간 트래픽 처리는 Guardrail이 담당합니다.</p>
+      </div>
+    </section>
+
+    <section class="bg-gradient-to-r from-blue-950/40 to-slate-900 border border-blue-500/30 rounded-2xl p-6">
+      <h3 class="text-lg font-bold text-white mb-3">한 흐름으로 보면</h3>
+      <div class="font-mono text-xs text-slate-300 leading-relaxed">
+        <p>① 평상시: 사용자 → <span class="text-blue-400">Guardrail(v7)</span> 필터 → 챗봇 응답</p>
+        <p class="mt-2">② 정책 개선: v8 초안 작성</p>
+        <p class="mt-2">③ 배포 전: <span class="text-emerald-400">GuardBench</span>가 v7 vs v8 테스트 → 보안 회귀 발견 → <span class="text-red-400">배포 차단</span></p>
+        <p class="mt-2">④ v8 수정 후 재검증 → <span class="text-emerald-400">배포 가능</span> → 그때 런타임 Guardrail을 v8로 교체</p>
+      </div>
+    </section>
+
+    <div class="flex gap-3">
+      <a href="index.html" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold rounded-xl flex items-center gap-2"><i data-lucide="bot" class="w-4 h-4"></i> 챗봇 데모 열기</a>
+      <a href="../frontend-v2/index.html" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white text-sm font-bold rounded-xl flex items-center gap-2"><i data-lucide="layout-dashboard" class="w-4 h-4"></i> GuardBench v2 대시보드</a>
+    </div>
+
+  </main>
+
+  <footer class="border-t border-slate-800 bg-slate-950 py-6 text-center text-xs text-slate-500">
+    <p>&copy; 2026 GuardBench Team (KOSA AWS 3팀) · <a href="../index.html" class="text-blue-400 hover:underline">포탈</a></p>
+  </footer>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>
