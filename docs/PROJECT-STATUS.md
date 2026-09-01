@@ -335,3 +335,66 @@ CloudFront Distribution
 - [MVP 범위](../guardbench-backend/docs/product/mvp-scope.md)
 - [평가 계약](../guardbench-backend/docs/domain/evaluation-contract.md)
 - [OpenAPI 스펙](../guardbench-backend/docs/api/openapi.yaml)
+
+---
+
+## 업데이트 이력 (2026-08-28 재동기화)
+
+기관 레포를 재동기화한 결과, **핵심 도메인 모델이 근본적으로 재정의**되었습니다. 이전 문서 내용 중 아래 항목이 변경되었으니 함께 참고하세요.
+
+### 최신 커밋 (재동기화 후)
+
+| 리포지토리 | 브랜치 | 최신 커밋 |
+| --- | --- | --- |
+| guardbench-backend | dev | `c53afe8` (PR #137, MVP 완료 문서 동기화) |
+| guardbench-frontend | main | `695b04b` (PR #24, secret role ARN) |
+| guardbench-iac | dev | `20fcc37` (PR #8, custom OIDC subject) |
+
+### 가장 큰 변화: SUT(테스트 대상) 개념 전환 (ADR 0010 → 0011)
+
+**이전 모델**: Bedrock Guardrail 자체를 테스트 대상으로 호출하고, Baseline(v7) vs Candidate(v8)를 동시 비교했다.
+
+**현재 모델**:
+- **Target = AI Application** (OpenAI 호환 HTTP 엔드포인트). 하나의 TestRun은 단일 Application Target만 실행한다.
+- **Evaluator = 판정기** (provider 독립). Application의 자연어 응답을 `EvaluationResult(ALLOW|BLOCK)`로 정규화한다. **Bedrock Guardrail은 이제 "첫 번째 Evaluator 구현"** 으로 위치가 바뀌었다.
+- 사용자는 provider/Guardrail id를 직접 넣지 않고, inline `evaluationProfile`(checks: PROMPT_INJECTION / PII_LEAKAGE / HARMFUL_CONTENT, strictness: RELAXED / STANDARD / STRICT)만 제출한다.
+- **Baseline/Candidate 동시 비교는 폐기**되었고, 대신 이미 완료된 두 Run의 저장 결과를 비교하는 **Regression API**가 신설되었다.
+
+새 실행 흐름:
+```
+TestCaseSnapshot → AI Application Target → 자연어 응답 → Evaluator → EvaluationResult(ALLOW/BLOCK) → ExpectedResult 비교 → Assertion → Quality Gate
+```
+
+### 신규 Regression API
+
+- `GET /api/v1/test-runs/{id}/comparable-runs` — 비교 가능한 다른 Run 목록
+- `GET /api/v1/test-runs/{currentId}/comparisons/{comparisonId}` — 두 Run 비교 (Application/Evaluator 재호출 없이 저장 결과만 비교)
+- 비교 불가 시 `409 TEST_RUNS_NOT_COMPARABLE`
+
+### Quality Gate 재정의 (현재 Run만 집계)
+
+- `assertionPassRate >= 0.95` **그리고** `executionSuccessRate >= 0.95` → PASS
+- 하나라도 미달 → FAIL / 평가 가능 Assertion 없음 → NOT_EVALUATED
+- 이전의 securityRegressionCount, usabilityRegressionRate 지표는 Regression API 쪽으로 분리됨
+
+### 패키지 구조 변화
+
+- `guardrail` 패키지 **삭제** → **`target`**(OpenAI 호환 HTTP 어댑터) + **`evaluator`**(Bedrock 판정 구현)로 분리
+- 현재: `testdefinition / testrun / evaluation / evaluator / target / common`
+
+### 코드 규모 변화
+
+| 구분 | 이전 | 현재 |
+| --- | --- | --- |
+| Backend main (Java) | 269 | 308 |
+| Backend test (Java) | 99 | 105 |
+| Flyway 마이그레이션 | V1~V2 | V1~V11 |
+
+### Frontend / IaC
+
+- **Frontend**: 여전히 mock 중심 SPA. 신규 문서 4종(screen-spec, user-flows, ui-guidelines, frontend-deployment) 추가. UI는 아직 구모델(Baseline/Candidate)이 남아 있어 백엔드 신모델과 불일치(문서에 12건 정리됨).
+- **IaC**: GitHub OIDC 배포 역할 추가(`github-oidc.tf`). 프론트 CI가 정적 키 없이 배포하도록 현대화.
+
+### 데모에 미치는 영향 (참고)
+
+이 워크스페이스의 챗봇 데모/역할 설명 페이지는 "Guardrail이 런타임 필터"라는 관점으로 만들어졌는데, 백엔드 신모델에서는 **테스트 대상이 AI Application이고 Guardrail은 판정기(Evaluator)** 로 역할이 재정의되었습니다. 데모 문구를 신모델에 맞춰 갱신할지는 별도 결정이 필요합니다.
