@@ -75,20 +75,50 @@ GuardBench 인프라는 백엔드 오케스트레이션과 Bedrock 연동 워커
 
 ---
 
-## 🌐 5. 배포 및 시연 접속 안내 (Live Demonstration)
+## 🚀 5. 최신 추가 개발 및 고도화 내역 (2026년 9월 기준)
 
-- **통합 포털 웹 주소**: [https://gdone9009.github.io/guardbench-dashboard/](https://gdone9009.github.io/guardbench-dashboard/)
+GuardBench 플랫폼은 초기 MVP 구축을 넘어 **성능 검증, 회귀 UI 비교, 부하 테스트, OIDC 보안 자동화** 영역으로 대대적인 고도화를 진행했습니다.
+
+| 구분 | 주요 개발 변경사항 | 💡 쉬운 비유 및 설명 |
+| :--- | :--- | :--- |
+| **백엔드 (Backend)** | • **Evaluator Metrics API 구축** (`/api/v1/test-runs/{id}/evaluator-metrics`) <br>• **사설 HTTP 타겟 Allowlist 검증** (`HttpEndpointUrlValidator`) <br>• **k6 기반 부하 성능 러너** (`performance/` 프레임워크) <br>• **Actuator 헬스체크** (`/actuator/health`) | • **건강검진 상세표 제공**: 테스트가 진행되는 동안 어떤 검사 항목이 몇 초 걸렸는지 세부 성능표를 보여줍니다.<br>• **안전 구역 지정**: 아무 URL이나 테스트 대상으로 넣지 못하도록 승인된 안전한 서버만 연결되도록 정문 경비원을 배치했습니다.<br>• **가상 주행 시험장**: 1,000개 이상의 프롬프트 폭주 시에도 SQS 큐가 터지지 않고 견디는지 가상 부하 시험을 자동 수행합니다. |
+| **프론트엔드 (Frontend)** | • **회귀 영향도 비교 전용 탭** (`RegressionComparisonSection`) <br>• **테스트 수트 신규 생성 모달** (`CreateSuiteModal`) <br>• **OpenAPI Nullability 자동 동기화** (`sync-openapi.mjs`) <br>• **에러 배너 및 접근성 개선** (`useDialogFocus`) | • **전후 비교 돋보기**: 이전 보안 규칙 대비 새 규칙이 "어떤 공격을 추가로 막았는지(보안 강화)"와 "어떤 정상 질문을 억울하게 막았는지(사용성 저하)"를 눈으로 바로 비교합니다.<br>• **직관적 수트 추가**: 코드를 몰라도 화면에서 클릭 몇 번으로 부서별 검증 세트를 만들 수 있습니다. |
+| **인프라 (IaC & CI/CD)** | • **데모 AI 타겟 인프라** (`demo-ai.tf`) <br>• **k6 성능 전용 ECS Task & ALB** (`performance-runner.tf`) <br>• **GitHub OIDC Keyless 배포** (`github-oidc.tf`) | • **가상 AI 샌드박스**: 외부 LLM 서비스 없이도 자체적으로 테스트를 완결할 수 있는 가상 AI 응답기를 테라폼으로 구축했습니다.<br>• **열쇠 없는 자동 배포**: AWS 비밀키(Access Key)를 유출 위험 있게 저장하지 않고, GitHub과 AWS가 직접 인증하여 배포하는 최신 OIDC 보안을 적용했습니다. |
+
+---
+
+## 🚘 6. GuardBench vs Amazon Bedrock Guardrail의 역할 구분 (쉬운 비유)
+
+많은 분들이 두 시스템의 역할을 헷갈려 합니다. 쉽게 비유하자면 다음과 같습니다:
+
+```text
+[실제 도로 주행] ──> Amazon Bedrock Guardrail (실시간 차선 이탈 방지 장치)
+                      사용자가 챗봇에 질문할 때마다 위험한 질문(욕설, 개인정보)을 0.1초 만에 즉시 차단!
+
+[자동차 안전 검사소] ──> GuardBench 플랫폼 (사전 회귀 평가 및 Quality Gate)
+                         새 가드레일 정책을 도로에 내보내기 전, 1,000가지 충돌 테스트를 돌려
+                         "이 정책을 배포해도 안전한가?" (PASSED / FAILED) 최종 승인을 내려주는 검수 센터!
+```
+
+---
+
+## 🌐 7. 배포 및 시연 접속 안내 (Live Demonstration)
+
+- **공식 팀 프론트엔드 포털 (최신 프로덕션 빌드)**: [http://localhost:3000/](http://localhost:3000/)
+- **개인 멀티버전 포털 웹 주소**: [https://gdone9009.github.io/guardbench-dashboard/](https://gdone9009.github.io/guardbench-dashboard/)
 - **v5.0 최종 버전 접속**: [https://gdone9009.github.io/guardbench-dashboard/guardbench-dashboard-v5/](https://gdone9009.github.io/guardbench-dashboard/guardbench-dashboard-v5/)
 
-#### 로컬 실행 방법
+#### 로컬 공식 팀 프론트엔드 시연 구동 방법
 ```bash
-cd /Users/gdone/dev/aws/guardbench-dashboard-v5
-python3 -m http.server 8085
+cd /Users/gdone/dev/aws/guardbench-frontend
+npm run build
+python3 -m http.server 3000 --directory dist
 ```
-브라우저에서 `http://localhost:8085` 접속 (또는 [`index.html`](file:///Users/gdone/dev/aws/guardbench-dashboard-v5/index.html) 직접 열기)
+브라우저에서 [`http://localhost:3000`](http://localhost:3000) 접속
 
 ---
 
 > 💡 **KOSA AWS 3팀 — GuardBench Project**  
 > 팀원: 전공자/실력자 2인, 중급자 2인, 입문자 1인 (총 5인)  
-> 기술 스택: Java 21, Spring Boot, Amazon Bedrock, Amazon SQS, AWS ECS Fargate, PostgreSQL, Terraform, Tailwind CSS
+> 기술 스택: Java 21, Spring Boot, Amazon Bedrock, Amazon SQS, AWS ECS Fargate, PostgreSQL, Terraform, React 19, TypeScript, Tailwind CSS
+
