@@ -75,21 +75,45 @@ GuardBench 인프라는 백엔드 오케스트레이션과 Bedrock 연동 워커
 
 ---
 
-## 🚀 5. 최신 추가 개발 및 고도화 내역 (2026년 9월 기준)
+## 🚀 5. 최신 추가 개발 및 고도화 내역 (2026년 9월 최신 기준)
 
-GuardBench 플랫폼은 초기 MVP 구축을 넘어 **성능 검증, 회귀 UI 비교, 부하 테스트, OIDC 보안 자동화** 영역으로 대대적인 고도화를 진행했습니다.
+GuardBench 플랫폼은 초기 MVP 및 1차 부하 테스트 구축을 넘어 **SageMaker 머신러닝 평가기 연동, 대량 파일 임포트, 동시성 제어, 다차원 결과 분석 및 비주얼 테스팅** 영역으로 크게 고도화되었습니다.
 
 | 구분 | 주요 개발 변경사항 | 💡 쉬운 비유 및 설명 |
 | :--- | :--- | :--- |
-| **백엔드 (Backend)** | • **Evaluator Metrics API 구축** (`/api/v1/test-runs/{id}/evaluator-metrics`) <br>• **사설 HTTP 타겟 Allowlist 검증** (`HttpEndpointUrlValidator`) <br>• **k6 기반 부하 성능 러너** (`performance/` 프레임워크) <br>• **Actuator 헬스체크** (`/actuator/health`) | • **건강검진 상세표 제공**: 테스트가 진행되는 동안 어떤 검사 항목이 몇 초 걸렸는지 세부 성능표를 보여줍니다.<br>• **안전 구역 지정**: 아무 URL이나 테스트 대상으로 넣지 못하도록 승인된 안전한 서버만 연결되도록 정문 경비원을 배치했습니다.<br>• **가상 주행 시험장**: 1,000개 이상의 프롬프트 폭주 시에도 SQS 큐가 터지지 않고 견디는지 가상 부하 시험을 자동 수행합니다. |
-| **프론트엔드 (Frontend)** | • **회귀 영향도 비교 전용 탭** (`RegressionComparisonSection`) <br>• **테스트 수트 신규 생성 모달** (`CreateSuiteModal`) <br>• **OpenAPI Nullability 자동 동기화** (`sync-openapi.mjs`) <br>• **에러 배너 및 접근성 개선** (`useDialogFocus`) | • **전후 비교 돋보기**: 이전 보안 규칙 대비 새 규칙이 "어떤 공격을 추가로 막았는지(보안 강화)"와 "어떤 정상 질문을 억울하게 막았는지(사용성 저하)"를 눈으로 바로 비교합니다.<br>• **직관적 수트 추가**: 코드를 몰라도 화면에서 클릭 몇 번으로 부서별 검증 세트를 만들 수 있습니다. |
-| **인프라 (IaC & CI/CD)** | • **데모 AI 타겟 인프라** (`demo-ai.tf`) <br>• **k6 성능 전용 ECS Task & ALB** (`performance-runner.tf`) <br>• **GitHub OIDC Keyless 배포** (`github-oidc.tf`) | • **가상 AI 샌드박스**: 외부 LLM 서비스 없이도 자체적으로 테스트를 완결할 수 있는 가상 AI 응답기를 테라폼으로 구축했습니다.<br>• **열쇠 없는 자동 배포**: AWS 비밀키(Access Key)를 유출 위험 있게 저장하지 않고, GitHub과 AWS가 직접 인증하여 배포하는 최신 OIDC 보안을 적용했습니다. |
+| **백엔드 (Backend)** | • **SageMaker Classifier Evaluator 어댑터 추가** (`SageMakerClassifierEvaluatorAdapter`) <br>• **테스트 케이스 대량 일괄 등록 & 핑거프린트 멱등성** (`TestCaseBulkCreateCommand`) <br>• **TestRun별 개별 Quality Gate 임계값 정책** (`QualityGatePolicy`) <br>• **Attention Facets 차원별 정밀 결과 서비스** (`GetTestRunResultDetailService`) <br>• **WorkItem 동시성 한계 제어기** (`WorkItemConcurrencyController`) | • **외부 전문 진단 기기 연동**: Bedrock 가드레일뿐만 아니라 Amazon SageMaker 기반 커스텀 분류 모델도 평가기로 직접 연결할 수 있습니다.<br>• **CSV/JSON 서류 일괄 접수**: 1,000개 테스트 케이스를 중복 없이 안전하게 한 번에 일괄 등록합니다.<br>• **맞춤형 통과 기준표**: Run별로 보안 결함 허용치나 최소 통과율을 자유롭게 설정하여 판정합니다.<br>• **동시 작업 차량 수 제어**: SQS 메시지가 과도하게 쏟아져도 시스템이 멈추지 않도록 최대 동시 처리량을 일정하게 조절합니다. |
+| **프론트엔드 (Frontend)** | • **CSV/JSON 대량 파일 업로드 패널** (`BulkTestCaseCreatePanel`) <br>• **Quality Gate 증거 시각화 & 차트** (`QualityGateEvidence`, `QualityGateMetricsChart`) <br>• **스텝별 대화형 진행률 표시기** (`RunProgressStepper`) <br>• **Vitest & Playwright 브라우저 테스팅 자동화** (`tests/browser/`) | • **엑셀/JSON 파일 원클릭 업로드**: 드래그 앤 드롭으로 1,000개 프롬프트 세트를 즉시 등록합니다.<br>• **품질 성적표 차트 시각화**: 통과율, 보안 결함, 사용성 저하 비율을 한눈에 파악할 수 있는 차트 배너를 제공합니다.<br>• **브라우저 로봇 검수기**: 화면 클릭과 UI 레이아웃이 깨지지 않도록 Vitest 브라우저 자동 테스트 슈트를 정립했습니다. |
+| **인프라 (IaC & CI/CD)** | • **SageMaker Classifier 모듈화** (`sagemaker-classifier.tf`) <br>• **DB 접근 모듈화** (`db-access.tf`) <br>• **성능 모니터링 분석 권한 분리** (`performance-analysis-access.tf`) | • **AI 분류기 자동 인프라**: SageMaker 모델 엔드포인트와 전용 IAM 스코프를 테라폼 한 줄로 자동 구성합니다.<br>• **최소 권한 데이터베이스 보안**: DB 접근 권한 및 분석 전용 IAM 권한을 엄격히 계층화하여 보안성을 높였습니다. |
 
 ---
 
-## 🚘 6. GuardBench vs Amazon Bedrock Guardrail의 역할 구분 (쉬운 비유)
+## 🔮 6. 더 고도화된 엔터프라이즈 서비스로 발전하기 위한 5가지 개선 로드맵
 
-많은 분들이 두 시스템의 역할을 헷갈려 합니다. 쉽게 비유하자면 다음과 같습니다:
+현재 GuardBench는 엔터프라이즈급 사전 회귀 평가 및 Quality Gate 기능을 갖추었으나, 향후 상용 수준의 완벽한 AI Safety 플랫폼으로 진화하기 위해 다음 5가지 고도화 방향을 제안합니다:
+
+### 1. 🤖 **Multi-Evaluator Ensemble & Weighted Scoring (다중 평가기 앙상블 및 가중치 채점)**
+- **개념**: 단일 Bedrock Guardrail 응답에만 의존하지 않고, **Bedrock + SageMaker Classifier + LLM-as-a-Judge(GPT-4o/Claude 3.5 Sonnet)**의 판정 결과를 가중치 앙상블(Ensemble)하여 종합 판정.
+- **기대 효과**: 단일 평가기의 오탐(False Positive)과 미탐(False Negative) 비율을 99% 이상 보정.
+
+### 2. ⚡ **Automated Red Teaming & Jailbreak Generation (자동 프롬프트 공격 생성기)**
+- **개념**: 사용자가 1,000개의 프롬프트를 일일이 수동 작성하지 않더라도, **Red Teaming LLM Agent가 최신 탈옥(Jailbreak) 기법(Crescendo, Base64, Multilingual, Roleplay)의 변종 프롬프트 10,000개를 자동으로 생성 및 자동 확장**.
+- **기대 효과**: 신종 공격에 대한 제로데이(Zero-day) 프롬프트 우회 방지.
+
+### 3. 🛠️ **Guardrail Policy Auto-Tuning & Self-Healing (가드레일 자가 치유 및 자동 정책 튜닝)**
+- **개념**: `SECURITY_REGRESSION` 발생 시, **"Bedrock Guardrail의 Sensitive Information Policy에서 PII 마스킹 레벨을 HIGH로 올리고, Content Filter의 Hate/Violence Threshold를 BLOCK(HIGH)로 상향해야 함"**을 코드로 제시해 주고 **[원클릭 자동 적용(Self-Healing)]** 버튼 제공.
+- **기대 효과**: 보안 담당자의 수동 설정 조작 시간 90% 단축.
+
+### 4. 👥 **Production Shadow Traffic Replay (프로덕션 섀도우 트래픽 리플레이)**
+- **개념**: 실제로 챗봇 사용자가 입력하는 운영 환경 트래픽을 섀도우(Shadow) 복제하여 GuardBench 검증 파이프라인으로 백그라운드 재실행.
+- **기대 효과**: 실제 사용자 질의 패턴을 바탕으로 프로덕션에 미칠 영향을 100% 정밀 예측.
+
+### 5. 🔔 **CI/CD Release Gatekeeper & Collaboration Bot (자동 배포 승인 및 슬랙/팀즈 알림)**
+- **개념**: GitHub PR 생성 시 자동으로 GuardBench TestRun을 실행하고, Quality Gate `PASSED` 시 PR 자동 승인/병합, `FAILED` 시 블록 및 상세 사유를 **Slack/Microsoft Teams 차트로 즉시 알림**.
+- **기대 효과**: 개발자/보안팀 간 커뮤니케이션 비용 제거 및 완전 자동화된 DevSecOps 달성.
+
+---
+
+## 🚘 7. GuardBench vs Amazon Bedrock Guardrail의 역할 구분 (쉬운 비유)
 
 ```text
 [실제 도로 주행] ──> Amazon Bedrock Guardrail (실시간 차선 이탈 방지 장치)
@@ -102,7 +126,7 @@ GuardBench 플랫폼은 초기 MVP 구축을 넘어 **성능 검증, 회귀 UI �
 
 ---
 
-## 🌐 7. 배포 및 시연 접속 안내 (Live Demonstration)
+## 🌐 8. 배포 및 시연 접속 안내 (Live Demonstration)
 
 - **공식 팀 프론트엔드 포털 (최신 프로덕션 빌드)**: [http://localhost:3000/](http://localhost:3000/)
 - **개인 멀티버전 포털 웹 주소**: [https://gdone9009.github.io/guardbench-dashboard/](https://gdone9009.github.io/guardbench-dashboard/)
@@ -120,5 +144,6 @@ python3 -m http.server 3000 --directory dist
 
 > 💡 **KOSA AWS 3팀 — GuardBench Project**  
 > 팀원: 전공자/실력자 2인, 중급자 2인, 입문자 1인 (총 5인)  
-> 기술 스택: Java 21, Spring Boot, Amazon Bedrock, Amazon SQS, AWS ECS Fargate, PostgreSQL, Terraform, React 19, TypeScript, Tailwind CSS
+> 기술 스택: Java 21, Spring Boot, Amazon Bedrock, Amazon SageMaker, Amazon SQS, AWS ECS Fargate, PostgreSQL, Terraform, React 19, TypeScript, Vitest, Tailwind CSS
+
 
